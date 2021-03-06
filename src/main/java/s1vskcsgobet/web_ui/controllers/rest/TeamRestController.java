@@ -35,7 +35,7 @@ public class TeamRestController {
     @GetMapping(path = "/findAll",
             produces = "application/json")
     public FindAllTeamsResponse findAllTeams() {
-        return teamService.findAllTeams();
+        return teamService.findAll();
     }
 
 }

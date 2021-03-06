@@ -48,7 +48,7 @@ public class TeamService {
         return new DeleteTeamByNameResponse(deletedTeamCount > 0);
     }
 
-    public FindAllTeamsResponse findAllTeams() {
+    public FindAllTeamsResponse findAll() {
         List<Team> allTeams = teamRepository.findAll();
         return new FindAllTeamsResponse(allTeams);
     }

@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import s1vskcsgobet.core.requests.user.AddUserRequest;
+import s1vskcsgobet.core.requests.user.DeleteUserByNicknameRequest;
 import s1vskcsgobet.core.responses.user.AddUserResponse;
+import s1vskcsgobet.core.responses.user.DeleteUserByNicknameResponse;
 import s1vskcsgobet.core.services.UserService;
 
 @RestController
@@ -23,6 +25,13 @@ public class UserRestController {
             produces = "application/json")
     public AddUserResponse addUser(@RequestBody AddUserRequest request) {
         return userService.add(request);
+    }
+
+    @PostMapping(path = "/deleteByNickname",
+            consumes = "application/json",
+            produces = "application/json")
+    public DeleteUserByNicknameResponse deleteUserByNickname(@RequestBody DeleteUserByNicknameRequest request) {
+        return userService.deleteByNickname(request);
     }
 
 }

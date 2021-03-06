@@ -7,7 +7,7 @@ import s1vskcsgobet.core.domain.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User save(User user);
+    int deleteByNicknameIgnoreCase(String nickname);
 
     boolean existsByNicknameIgnoreCase(String nickname);
 

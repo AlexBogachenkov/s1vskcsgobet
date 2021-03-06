@@ -89,6 +89,34 @@
         };
     }
 
+    function sendDeleteUserRequest() {
+        let nickname = document.getElementById("user-to-delete-nickname").value;
+        let url = "/user/deleteByNickname";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({"nickname": nickname});
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    if (responseObject.deleted === true) {
+                        alert("✔ User deleted!");
+                    } else {
+                        alert("❌ Team isn't deleted!");
+                    }
+
+                }
+            }
+        };
+    }
+
     function sendAddTeamRequest() {
         let teamName = document.getElementById("team-to-add-name").value;
         let url = "/team/add";
