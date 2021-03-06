@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+</head>
+<body>
+<h1>Admin page</h1>
+
+<a href="#" onclick="hideOrShowDiv('user-operations')">User</a>
+<div id="user-operations" style="display: none">
+    <h3>Add user</h3>
+    <input type="text" id="user-to-add-nickname" placeholder="Nickname">
+    <input type="password" id="user-to-add-password" placeholder="Password">
+    <input type="number" id="user-to-add-balance" step=".01" placeholder="Balance">
+    <select name="role" id="user-to-add-role">
+        <option value="USER">USER</option>
+        <option value="MODERATOR">MODERATOR</option>
+        <option value="ADMIN">ADMIN</option>
+    </select>
+    <button onclick="sendAddUserRequest()">Add user</button>
+
+    <h3>Delete user</h3>
+    <input type="text" id="user-to-delete-nickname">
+    <button onclick="sendDeleteUserRequest()">Delete user</button>
+
+    <h3>Find all users</h3>
+    <button id="find-all-users-btn" onclick="sendFindAllUsersRequest()">Find all users</button>
+    <p id="all-users"></p>
+
+</div>
+
+<a href="#" onclick="hideOrShowDiv('team-operations')">Team</a>
+<div id="team-operations" style="display: none">
+    <h3>Add team</h3>
+    <input type="text" id="team-to-add-name">
+    <button onclick="sendAddTeamRequest()">Add team</button>
+
+    <h3>Delete team</h3>
+    <input type="text" id="team-to-delete-name">
+    <button onclick="sendDeleteTeamRequest()">Delete team</button>
+
+    <h3>Find all teams</h3>
+    <button id="find-all-teams-btn" onclick="sendFindAllTeamsRequest()">Find all teams</button>
+    <p id="all-teams"></p>
+
+</div>
+
+<script>
+
+    function hideOrShowDiv(divId) {
+        let element = document.getElementById(divId);
+        if (element.style.display === "none") {
+            element.style.display = "block";
+        } else {
+            element.style.display = "none";
+        }
+    }
+
+    function sendAddUserRequest() {
+        let nickname = document.getElementById("user-to-add-nickname").value;
+        let password = document.getElementById("user-to-add-password").value;
+        let balance = document.getElementById("user-to-add-balance").value;
+        let role = document.getElementById("user-to-add-role").value;
+        let url = "/user/add";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({
+            "userNickname": nickname,
+            "userPassword": password,
+            "userBalance": balance,
+            "userRole": role
+        });
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                console.log(responseObject);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert('✔ User added: "' + responseObject.addedUser.nickname + '"');
+                }
+            }
+        };
+    }
+
+    function sendAddTeamRequest() {
+        let teamName = document.getElementById("team-to-add-name").value;
+        let url = "/team/add";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({"teamName": teamName});
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert('✔ Team added: "' + responseObject.addedTeam.name + '"');
+                }
+            }
+        };
+    }
+
+    function sendDeleteTeamRequest() {
+        let teamName = document.getElementById("team-to-delete-name").value;
+        let url = "/team/deleteByName";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({"teamName": teamName});
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    if (responseObject.deleted === true) {
+                        alert("✔ Team deleted!");
+                    } else {
+                        alert("❌ Team isn't deleted!");
+                    }
+
+                }
+            }
+        };
+    }
+
+    function sendFindAllTeamsRequest() {
+        let url = "/team/findAll";
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.send();
+
+        let findAllTeamsBtn = document.getElementById("find-all-teams-btn");
+
+        if (findAllTeamsBtn.innerText === "Find all teams") {
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let responseList = JSON.parse(this.responseText);
+                    for (let i = 0; i < responseList.allTeams.length; i++) {
+                        document.getElementById("all-teams").innerHTML += "ID: " + responseList.allTeams[i].id + ", name: " + responseList.allTeams[i].name + ".<br>";
+                    }
+                }
+            };
+            findAllTeamsBtn.innerText = "Hide all teams";
+        } else if (findAllTeamsBtn.innerText === 'Hide all teams') {
+            document.getElementById("all-teams").innerHTML = "";
+            findAllTeamsBtn.innerText = "Find all teams";
+        }
+    }
+</script>
+</body>
+</html>

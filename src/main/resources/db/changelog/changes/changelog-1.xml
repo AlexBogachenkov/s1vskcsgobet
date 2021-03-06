@@ -1,0 +1,98 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet author="alex" id="1">
+        <createTable tableName="teams">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="teams"
+                       cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="alex" id="2">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="nickname" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="DECIMAL()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="teams"
+                       cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="alex" id="3">
+        <createTable tableName="bets">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="team_a_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_team_a_id" references="teams(id)"/>
+            </column>
+            <column name="team_b_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_team_b_id" references="teams(id)"/>
+            </column>
+            <column name="coefficient_team_a" type="DECIMAL()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coefficient_team_b" type="DECIMAL()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BIT()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="alex" id="4">
+        <createTable tableName="user_bets">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_user_id" references="users(id)"/>
+            </column>
+            <column name="bet_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_bet_id" references="bets(id)"/>
+            </column>
+            <column name="winning_team_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_winning_team_id" references="teams(id)"/>
+            </column>
+            <column name="amount" type="DECIMAL()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="teams"
+                       cascadeConstraints="true"/>
+            <dropTable tableName="users"
+                       cascadeConstraints="true"/>
+            <dropTable tableName="bets"
+                       cascadeConstraints="true"/>
+            <dropTable tableName="user_bets"
+                       cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

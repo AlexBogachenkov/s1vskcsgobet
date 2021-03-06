@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="5" author="alex">
+        <modifyDataType tableName="users" columnName="role" newDataType="INTEGER"/>
+    </changeSet>
+    <changeSet id="6" author="alex">
+        <modifyDataType tableName="user_bets" columnName="status" newDataType="INTEGER"/>
+    </changeSet>
+    <changeSet id="7" author="alex">
+        <modifyDataType tableName="users" columnName="role" newDataType="VARCHAR(20)"/>
+    </changeSet>
+    <changeSet id="8" author="alex">
+        <modifyDataType tableName="user_bets" columnName="status" newDataType="VARCHAR(20)"/>
+    </changeSet>
+
+</databaseChangeLog>
