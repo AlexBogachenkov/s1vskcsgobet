@@ -7,8 +7,10 @@ import s1vskcsgobet.core.domain.User;
 import s1vskcsgobet.core.requests.user.AddUserRequest;
 import s1vskcsgobet.core.requests.user.DeleteUserByNicknameRequest;
 import s1vskcsgobet.core.responses.CoreError;
+import s1vskcsgobet.core.responses.team.FindAllTeamsResponse;
 import s1vskcsgobet.core.responses.user.AddUserResponse;
 import s1vskcsgobet.core.responses.user.DeleteUserByNicknameResponse;
+import s1vskcsgobet.core.responses.user.FindAllUsersResponse;
 import s1vskcsgobet.core.validators.user.AddUserRequestValidator;
 import s1vskcsgobet.core.validators.user.DeleteUserByNicknameValidator;
 
@@ -45,6 +47,11 @@ public class UserService {
         }
         int deletedUserCount = userRepository.deleteByNicknameIgnoreCase(request.getNickname());
         return new DeleteUserByNicknameResponse(deletedUserCount > 0);
+    }
+
+    public FindAllUsersResponse findAll() {
+        List<User> allUsers = userRepository.findAll();
+        return new FindAllUsersResponse(allUsers);
     }
 
 }

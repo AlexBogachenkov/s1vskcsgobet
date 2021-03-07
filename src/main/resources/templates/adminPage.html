@@ -8,6 +8,7 @@
 <h1>Admin page</h1>
 
 <a href="#" onclick="hideOrShowDiv('user-operations')">User</a>
+
 <div id="user-operations" style="display: none">
     <h3>Add user</h3>
     <input type="text" id="user-to-add-nickname" placeholder="Nickname">
@@ -27,10 +28,10 @@
     <h3>Find all users</h3>
     <button id="find-all-users-btn" onclick="sendFindAllUsersRequest()">Find all users</button>
     <p id="all-users"></p>
-
 </div>
 
 <a href="#" onclick="hideOrShowDiv('team-operations')">Team</a>
+
 <div id="team-operations" style="display: none">
     <h3>Add team</h3>
     <input type="text" id="team-to-add-name">
@@ -94,7 +95,7 @@
         let url = "/user/deleteByNickname";
 
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
+        xhr.open("DELETE", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
 
         let request = JSON.stringify({"nickname": nickname});
@@ -115,6 +116,30 @@
                 }
             }
         };
+    }
+
+    function sendFindAllUsersRequest() {
+        let url = "/user/findAll";
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.send();
+
+        let findAllTeamsBtn = document.getElementById("find-all-users-btn");
+
+        if (findAllTeamsBtn.innerText === "Find all users") {
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let responseList = JSON.parse(this.responseText);
+                    for (let i = 0; i < responseList.allUsers.length; i++) {
+                        document.getElementById("all-users").innerHTML += "ID: " + responseList.allUsers[i].id + ", nickname: '" + responseList.allUsers[i].nickname + "', balance: " + responseList.allUsers[i].balance + ", role: '" + responseList.allUsers[i].role + "'.<br>";
+                    }
+                }
+            };
+            findAllTeamsBtn.innerText = "Hide all users";
+        } else if (findAllTeamsBtn.innerText === "Hide all users") {
+            document.getElementById("all-users").innerHTML = "";
+            findAllTeamsBtn.innerText = "Find all users";
+        }
     }
 
     function sendAddTeamRequest() {
@@ -145,7 +170,7 @@
         let url = "/team/deleteByName";
 
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
+        xhr.open("DELETE", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
 
         let request = JSON.stringify({"teamName": teamName});

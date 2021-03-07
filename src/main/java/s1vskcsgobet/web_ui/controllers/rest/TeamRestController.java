@@ -25,7 +25,7 @@ public class TeamRestController {
         return teamService.add(request);
     }
 
-    @PostMapping(path = "/deleteByName",
+    @DeleteMapping(path = "/deleteByName",
             consumes = "application/json",
             produces = "application/json")
     public DeleteTeamByNameResponse deleteTeamByName(@RequestBody DeleteTeamByNameRequest request) {
