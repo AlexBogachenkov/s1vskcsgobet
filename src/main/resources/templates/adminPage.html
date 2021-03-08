@@ -122,11 +122,11 @@
         let url = "/user/findAll";
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
-        xhr.send();
 
         let findAllTeamsBtn = document.getElementById("find-all-users-btn");
 
         if (findAllTeamsBtn.innerText === "Find all users") {
+            xhr.send();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     let responseList = JSON.parse(this.responseText);
@@ -197,11 +197,11 @@
         let url = "/team/findAll";
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
-        xhr.send();
 
         let findAllTeamsBtn = document.getElementById("find-all-teams-btn");
 
         if (findAllTeamsBtn.innerText === "Find all teams") {
+            xhr.send();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     let responseList = JSON.parse(this.responseText);
