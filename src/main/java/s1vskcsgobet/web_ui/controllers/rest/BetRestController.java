@@ -1,11 +1,9 @@
 package s1vskcsgobet.web_ui.controllers.rest;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import s1vskcsgobet.core.requests.bet.AddBetRequest;
 import s1vskcsgobet.core.responses.bet.AddBetResponse;
+import s1vskcsgobet.core.responses.bet.FindAllBetsResponse;
 import s1vskcsgobet.core.services.BetService;
 
 @RestController
@@ -21,8 +19,16 @@ public class BetRestController {
     @PostMapping(path = "/add",
             consumes = "application/json",
             produces = "application/json")
-    public AddBetResponse addTeam(@RequestBody AddBetRequest request) {
+    public AddBetResponse addBet(@RequestBody AddBetRequest request) {
         return betService.add(request);
+    }
+
+
+
+    @GetMapping(path = "/findAll",
+            produces = "application/json")
+    public FindAllBetsResponse findAllBets() {
+        return betService.findAll();
     }
 
 }

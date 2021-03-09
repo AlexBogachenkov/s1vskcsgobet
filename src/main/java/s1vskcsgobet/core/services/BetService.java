@@ -6,10 +6,10 @@ import s1vskcsgobet.core.database.BetRepository;
 import s1vskcsgobet.core.database.TeamRepository;
 import s1vskcsgobet.core.domain.Bet;
 import s1vskcsgobet.core.domain.Team;
-import s1vskcsgobet.core.dto.BetDto;
 import s1vskcsgobet.core.requests.bet.AddBetRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.bet.AddBetResponse;
+import s1vskcsgobet.core.responses.bet.FindAllBetsResponse;
 import s1vskcsgobet.core.validators.bet.AddBetRequestValidator;
 
 import java.util.List;
@@ -40,4 +40,12 @@ public class BetService {
         Bet addedBet = betRepository.save(bet);
         return new AddBetResponse(addedBet);
     }
+
+
+
+    public FindAllBetsResponse findAll() {
+        List<Bet> allBets = betRepository.findAllByOrderByIdDesc();
+        return new FindAllBetsResponse(allBets);
+    }
+
 }

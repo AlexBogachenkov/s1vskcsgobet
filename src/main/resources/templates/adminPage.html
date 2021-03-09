@@ -116,6 +116,31 @@
         };
     }
 
+    function sendFindAllBetsRequest() {
+        let url = "/bet/findAll";
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+
+        let findAllBetsBtn = document.getElementById("find-all-bets-btn");
+
+        if (findAllBetsBtn.innerText === "Find all bets") {
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let responseObject = JSON.parse(this.responseText);
+                    console.log(responseObject);
+                    for (let i = 0; i < responseObject.allBets.length; i++) {
+                        document.getElementById("all-bets").innerHTML += "ID: " + responseObject.allBets[i].id + ", team A name: '" + responseObject.allBets[i].teamA.name + "', team A coefficient: " + responseObject.allBets[i].coefficientTeamA + ", team B name: '" + responseObject.allBets[i].teamB.name + "', team B coefficient: " + responseObject.allBets[i].coefficientTeamB + ", is active: " + responseObject.allBets[i].active + ".<br>";
+                    }
+                }
+            };
+            findAllBetsBtn.innerText = "Hide all bets";
+        } else if (findAllBetsBtn.innerText === "Hide all bets") {
+            document.getElementById("all-bets").innerHTML = "";
+            findAllBetsBtn.innerText = "Find all bets";
+        }
+    }
+
     function sendAddUserRequest() {
         let nickname = document.getElementById("user-to-add-nickname").value;
         let password = document.getElementById("user-to-add-password").value;
