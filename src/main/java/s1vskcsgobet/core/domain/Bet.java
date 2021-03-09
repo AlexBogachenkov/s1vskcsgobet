@@ -27,4 +27,14 @@ public class Bet {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
+    public Bet() {
+    }
+
+    public Bet(Team teamA, Team teamB, BigDecimal coefficientTeamA, BigDecimal coefficientTeamB, boolean isActive) {
+        this.teamA = teamA;
+        this.teamB = teamB;
+        this.coefficientTeamA = coefficientTeamA;
+        this.coefficientTeamB = coefficientTeamB;
+        this.isActive = isActive;
+    }
 }

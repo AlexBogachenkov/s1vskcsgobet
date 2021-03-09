@@ -7,6 +7,30 @@
 <body>
 <h1>Admin page</h1>
 
+<a href="#" onclick="hideOrShowDiv('bet-operations')">Bet</a>
+
+<div id="bet-operations" style="display: none">
+    <h3>Add bet</h3>
+    <input type="text" id="bet-to-add-team-a-name" placeholder="Team A name">
+    <input type="text" id="bet-to-add-team-b-name" placeholder="Team B name">
+    <input type="number" id="bet-to-add-team-a-coefficient" step=".01" placeholder="Team A coefficient">
+    <input type="number" id="bet-to-add-team-b-coefficient" step=".01" placeholder="Team B coefficient">
+    <label for="bet-to-add-is-active">Is active:</label>
+    <select name="status" id="bet-to-add-is-active">
+        <option value="true">true</option>
+        <option value="false">false</option>
+    </select>
+    <button onclick="sendAddBetRequest()">Add bet</button>
+
+    <h3>Delete bet</h3>
+    <input type="number" id="bet-to-delete-id" placeholder="Bet ID">
+    <button onclick="sendDeleteBetRequest()">Delete bet</button>
+
+    <h3>Find all bets</h3>
+    <button id="find-all-bets-btn" onclick="sendFindAllBetsRequest()">Find all bets</button>
+    <p id="all-bets"></p>
+</div>
+
 <a href="#" onclick="hideOrShowDiv('user-operations')">User</a>
 
 <div id="user-operations" style="display: none">
@@ -14,6 +38,7 @@
     <input type="text" id="user-to-add-nickname" placeholder="Nickname">
     <input type="password" id="user-to-add-password" placeholder="Password">
     <input type="number" id="user-to-add-balance" step=".01" placeholder="Balance">
+    <label for="user-to-add-role">Role:</label>
     <select name="role" id="user-to-add-role">
         <option value="USER">USER</option>
         <option value="MODERATOR">MODERATOR</option>
@@ -22,7 +47,7 @@
     <button onclick="sendAddUserRequest()">Add user</button>
 
     <h3>Delete user</h3>
-    <input type="text" id="user-to-delete-nickname">
+    <input type="text" id="user-to-delete-nickname" placeholder="User nickname">
     <button onclick="sendDeleteUserRequest()">Delete user</button>
 
     <h3>Find all users</h3>
@@ -34,11 +59,11 @@
 
 <div id="team-operations" style="display: none">
     <h3>Add team</h3>
-    <input type="text" id="team-to-add-name">
+    <input type="text" id="team-to-add-name" placeholder="Team name">
     <button onclick="sendAddTeamRequest()">Add team</button>
 
     <h3>Delete team</h3>
-    <input type="text" id="team-to-delete-name">
+    <input type="text" id="team-to-delete-name" placeholder="Team name">
     <button onclick="sendDeleteTeamRequest()">Delete team</button>
 
     <h3>Find all teams</h3>
@@ -56,6 +81,39 @@
         } else {
             element.style.display = "none";
         }
+    }
+
+    function sendAddBetRequest() {
+        let teamAName = document.getElementById("bet-to-add-team-a-name").value;
+        let teamBName = document.getElementById("bet-to-add-team-b-name").value;
+        let teamACoefficient = document.getElementById("bet-to-add-team-a-coefficient").value;
+        let teamBCoefficient = document.getElementById("bet-to-add-team-b-coefficient").value;
+        let isActive = document.getElementById("bet-to-add-is-active").value;
+        let url = "/bet/add";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({
+            "teamAName": teamAName,
+            "teamBName": teamBName,
+            "coefficientTeamA": teamACoefficient,
+            "coefficientTeamB": teamBCoefficient,
+            "active": isActive
+        });
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert("✔ Bet added with ID: " + responseObject.addedBet.id + ".");
+                }
+            }
+        };
     }
 
     function sendAddUserRequest() {
@@ -80,7 +138,6 @@
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 let responseObject = JSON.parse(this.responseText);
-                console.log(responseObject);
                 if (responseObject.errors != null) {
                     alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
                 } else {

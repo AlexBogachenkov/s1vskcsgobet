@@ -16,5 +16,11 @@
     <changeSet id="8" author="alex">
         <modifyDataType tableName="user_bets" columnName="status" newDataType="VARCHAR(20)"/>
     </changeSet>
+    <changeSet id="9" author="alex">
+        <modifyDataType tableName="bets" columnName="coefficient_team_a" newDataType="DECIMAL(10,2)"/>
+    </changeSet>
+    <changeSet id="10" author="alex">
+        <modifyDataType tableName="bets" columnName="coefficient_team_b" newDataType="DECIMAL(10,2)"/>
+    </changeSet>
 
 </databaseChangeLog>
