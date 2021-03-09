@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="en">-->
 <head>
     <meta charset="UTF-8">
     <title>Admin page</title>
@@ -111,6 +111,29 @@
                     alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
                 } else {
                     alert("✔ Bet added with ID: " + responseObject.addedBet.id + ".");
+                }
+            }
+        };
+    }
+
+    function sendDeleteBetRequest() {
+        let betId = document.getElementById("bet-to-delete-id").value;
+        let url = "/bet/deleteById";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("DELETE", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({"betId": betId});
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert("✔ Bet deleted!");
                 }
             }
         };

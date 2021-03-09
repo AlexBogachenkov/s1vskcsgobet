@@ -23,7 +23,7 @@ public class SpringCoreConfiguration {
     public SpringLiquibase springLiquibase(DataSource dataSource) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setChangeLog("classpath:/db/changelog/changelog-master.xml");
-        liquibase.setShouldRun(true);
+        liquibase.setShouldRun(false);
         liquibase.setDataSource(dataSource);
         return liquibase;
     }

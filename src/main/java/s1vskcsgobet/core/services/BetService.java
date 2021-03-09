@@ -7,10 +7,13 @@ import s1vskcsgobet.core.database.TeamRepository;
 import s1vskcsgobet.core.domain.Bet;
 import s1vskcsgobet.core.domain.Team;
 import s1vskcsgobet.core.requests.bet.AddBetRequest;
+import s1vskcsgobet.core.requests.bet.DeleteBetByIdRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.bet.AddBetResponse;
+import s1vskcsgobet.core.responses.bet.DeleteBetByIdResponse;
 import s1vskcsgobet.core.responses.bet.FindAllBetsResponse;
 import s1vskcsgobet.core.validators.bet.AddBetRequestValidator;
+import s1vskcsgobet.core.validators.bet.DeleteBetByIdRequestValidator;
 
 import java.util.List;
 
@@ -20,12 +23,14 @@ public class BetService {
     private final BetRepository betRepository;
     private final TeamRepository teamRepository;
     private final AddBetRequestValidator addBetRequestValidator;
+    private final DeleteBetByIdRequestValidator deleteBetByIdRequestValidator;
 
     public BetService(BetRepository betRepository, TeamRepository teamRepository,
-                      AddBetRequestValidator addBetRequestValidator) {
+                      AddBetRequestValidator addBetRequestValidator, DeleteBetByIdRequestValidator deleteBetByIdRequestValidator) {
         this.betRepository = betRepository;
         this.teamRepository = teamRepository;
         this.addBetRequestValidator = addBetRequestValidator;
+        this.deleteBetByIdRequestValidator = deleteBetByIdRequestValidator;
     }
 
     @Transactional
@@ -41,7 +46,15 @@ public class BetService {
         return new AddBetResponse(addedBet);
     }
 
-
+    @Transactional
+    public DeleteBetByIdResponse deleteById(DeleteBetByIdRequest request) {
+        List<CoreError> errors = deleteBetByIdRequestValidator.validate(request);
+        if (!errors.isEmpty()) {
+            return new DeleteBetByIdResponse(errors);
+        }
+        betRepository.deleteById(request.getBetId());
+        return new DeleteBetByIdResponse(true);
+    }
 
     public FindAllBetsResponse findAll() {
         List<Bet> allBets = betRepository.findAllByOrderByIdDesc();
