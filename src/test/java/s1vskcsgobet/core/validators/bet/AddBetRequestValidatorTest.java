@@ -25,13 +25,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamANameIsEmpty() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("2.23"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("", "TeamBName",
+                new BigDecimal("2.23"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -42,13 +37,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamANameIsBlank() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("     ")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("2.23"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("     ", "TeamBName",
+                new BigDecimal("2.23"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -59,13 +49,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamANotFound() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("2.23"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("2.23"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(false);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -77,13 +62,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamBNameIsEmpty() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("")
-                .coefficientTeamA(new BigDecimal("2.23"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "",
+                new BigDecimal("2.23"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -94,13 +74,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamBNameIsBlank() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("     ")
-                .coefficientTeamA(new BigDecimal("2.23"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "     ",
+                new BigDecimal("2.23"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -111,13 +86,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamBNotFound() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("2.23"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("2.23"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
@@ -129,13 +99,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamNamesAreEqual() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamAName")
-                .coefficientTeamA(new BigDecimal("2.23"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamAName",
+                new BigDecimal("2.23"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -146,13 +111,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamAIsNull() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(null)
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                null, new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -164,13 +124,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamAIsEmpty() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(BigDecimal.ZERO)
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                BigDecimal.ZERO, new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -182,13 +137,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamAIsLessThanOne() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("0.23"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("0.23"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -200,13 +150,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamAEqualsOne() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("1.00"))
-                .coefficientTeamB(new BigDecimal("1.45"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("1.00"), new BigDecimal("1.45"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -218,13 +163,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamBIsNull() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("1.45"))
-                .coefficientTeamB(null)
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("1.45"), null, true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -236,13 +176,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamBIsEmpty() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("1.45"))
-                .coefficientTeamB(BigDecimal.ZERO)
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("1.45"), BigDecimal.ZERO, true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -254,13 +189,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamBIsLessThanOne() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("1.45"))
-                .coefficientTeamB(new BigDecimal("0.23"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("1.45"), new BigDecimal("0.23"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -272,13 +202,8 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamBEqualsOne() {
-        AddBetRequest request = AddBetRequest.builder()
-                .teamAName("TeamAName")
-                .teamBName("TeamBName")
-                .coefficientTeamA(new BigDecimal("1.45"))
-                .coefficientTeamB(new BigDecimal("1.00"))
-                .isActive(true)
-                .build();
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("1.45"), new BigDecimal("1.00"), true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
@@ -286,6 +211,17 @@ class AddBetRequestValidatorTest {
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
         assertEquals("must be greater than 1.00", errors.get(0).getMessage());
+    }
+
+    @Test
+    public void shouldNotReturnErrors() {
+        AddBetRequest request = new AddBetRequest("TeamAName", "TeamBName",
+                new BigDecimal("1.45"), new BigDecimal("1.10"), true);
+        Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
+        Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
+        List<CoreError> errors = validator.validate(request);
+
+        assertEquals(0, errors.size());
     }
 
 }

@@ -1,12 +1,10 @@
 package s1vskcsgobet.core.requests.bet;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-@Builder
 public class AddBetRequest {
 
     private String teamAName;
@@ -15,4 +13,15 @@ public class AddBetRequest {
     private BigDecimal coefficientTeamB;
     private boolean isActive;
 
+    public AddBetRequest() {
+    }
+
+    public AddBetRequest(String teamAName, String teamBName,
+                         BigDecimal coefficientTeamA, BigDecimal coefficientTeamB, boolean isActive) {
+        this.teamAName = teamAName;
+        this.teamBName = teamBName;
+        this.coefficientTeamA = coefficientTeamA;
+        this.coefficientTeamB = coefficientTeamB;
+        this.isActive = isActive;
+    }
 }

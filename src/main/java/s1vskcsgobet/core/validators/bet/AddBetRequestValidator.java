@@ -26,7 +26,6 @@ public class AddBetRequestValidator {
         validateTeamNamesForEquality(request.getTeamAName(), request.getTeamBName()).ifPresent(errors::add);
         validateCoefficient(request.getCoefficientTeamA()).ifPresent(errors::add);
         validateCoefficient(request.getCoefficientTeamB()).ifPresent(errors::add);
-        validateStatus(request.isActive()).ifPresent(errors::add);
         return errors;
     }
 
@@ -53,14 +52,6 @@ public class AddBetRequestValidator {
             return Optional.of(new CoreError("Coefficient", "must not be empty!"));
         } else if (coefficient.compareTo(BigDecimal.ONE) <= 0) {
             return Optional.of(new CoreError("Coefficient", "must be greater than 1.00"));
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private Optional<CoreError> validateStatus(boolean isActive) {
-        if (isActive != true && isActive != false) {
-            return Optional.of(new CoreError("Bet status", "must be 'true' or 'false'!"));
         } else {
             return Optional.empty();
         }
