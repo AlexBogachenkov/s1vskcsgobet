@@ -7,4 +7,8 @@ public class AddTeamRequest {
 
     private String teamName;
 
+    public AddTeamRequest(String teamName) {
+        this.teamName = teamName;
+    }
+
 }
