@@ -25,7 +25,7 @@ public class DeleteUserByNicknameValidator {
     }
 
     private Optional<CoreError> validateNickname(DeleteUserByNicknameRequest request) {
-        if (request.getNickname() == null || request.getNickname().isEmpty() || request.getNickname().isBlank()) {
+        if (request.getNickname() == null || request.getNickname().isBlank()) {
             return Optional.of(new CoreError("User nickname", "must not be empty!"));
         } else if (!userRepository.existsByNicknameIgnoreCase(request.getNickname())) {
             return Optional.of(new CoreError("User nickname", "User with this property not found."));

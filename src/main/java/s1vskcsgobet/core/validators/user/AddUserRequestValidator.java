@@ -29,7 +29,7 @@ public class AddUserRequestValidator {
     }
 
     private Optional<CoreError> validateNickname(AddUserRequest request) {
-        if (request.getUserNickname() == null || request.getUserNickname().isEmpty() || request.getUserNickname().isBlank()) {
+        if (request.getUserNickname() == null || request.getUserNickname().isBlank()) {
             return Optional.of(new CoreError("User nickname", "must not be empty!"));
         } else if (userRepository.existsByNicknameIgnoreCase(request.getUserNickname())) {
             return Optional.of(new CoreError("User nickname", "User with this property already exists."));
@@ -39,7 +39,7 @@ public class AddUserRequestValidator {
     }
 
     private Optional<CoreError> validatePassword(AddUserRequest request) {
-        if (request.getUserPassword() == null || request.getUserPassword().isEmpty() || request.getUserPassword().isBlank()) {
+        if (request.getUserPassword() == null || request.getUserPassword().isBlank()) {
             return Optional.of(new CoreError("User password", "must not be empty and must not contain only spaces!"));
         } else if (request.getUserPassword().length() < 6 || request.getUserPassword().length() > 20) {
             return Optional.of(new CoreError("User password", "must contain from 6 to 20 characters(including)."));
@@ -59,7 +59,7 @@ public class AddUserRequestValidator {
     }
 
     private Optional<CoreError> validateRole(AddUserRequest request) {
-        if (request.getUserRole() == null || request.getUserRole().isEmpty() || request.getUserRole().isBlank()) {
+        if (request.getUserRole() == null || request.getUserRole().isBlank()) {
             return Optional.of(new CoreError("User role", "must not be empty!"));
         } else if (!request.getUserRole().equals("USER") && !request.getUserRole().equals("MODERATOR") &&
                 !request.getUserRole().equals("ADMIN")) {

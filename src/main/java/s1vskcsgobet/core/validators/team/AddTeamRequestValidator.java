@@ -25,7 +25,7 @@ public class AddTeamRequestValidator {
     }
 
     private Optional<CoreError> validateName(AddTeamRequest request) {
-        if (request.getTeamName() == null || request.getTeamName().isEmpty() || request.getTeamName().isBlank()) {
+        if (request.getTeamName() == null || request.getTeamName().isBlank()) {
             return Optional.of(new CoreError("Team name", "must not be empty!"));
         } else if (teamRepository.existsByNameIgnoreCase(request.getTeamName())) {
             return Optional.of(new CoreError("Team name", "Team with this property already exists."));

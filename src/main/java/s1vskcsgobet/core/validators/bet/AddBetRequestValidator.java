@@ -30,7 +30,7 @@ public class AddBetRequestValidator {
     }
 
     private Optional<CoreError> validateTeamName(String teamName) {
-        if (teamName == null || teamName.isEmpty() || teamName.isBlank()) {
+        if (teamName == null || teamName.isBlank()) {
             return Optional.of(new CoreError("Team name", "must not be empty!"));
         } else if (!teamRepository.existsByNameIgnoreCase(teamName)) {
             return Optional.of(new CoreError("Team name", "Team with this property not found."));
