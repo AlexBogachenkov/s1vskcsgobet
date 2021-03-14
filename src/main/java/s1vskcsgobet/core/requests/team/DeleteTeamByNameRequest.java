@@ -7,4 +7,8 @@ public class DeleteTeamByNameRequest {
 
     private String teamName;
 
+    public DeleteTeamByNameRequest(String teamName) {
+        this.teamName = teamName;
+    }
+
 }
