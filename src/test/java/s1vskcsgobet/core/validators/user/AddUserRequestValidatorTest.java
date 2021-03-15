@@ -206,7 +206,7 @@ class AddUserRequestValidatorTest {
     }
 
     @Test
-    public void shouldReturnError_whenRoleIsAllowedValueUser() {
+    public void shouldNotReturnErrors_whenRoleIsAllowedValueUser() {
         AddUserRequest request = new AddUserRequest("Nickname", "password",
                 new BigDecimal("100"), Role.USER);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
@@ -216,7 +216,7 @@ class AddUserRequestValidatorTest {
     }
 
     @Test
-    public void shouldReturnError_whenRoleIsAllowedValueModerator() {
+    public void shouldNotReturnErrors_whenRoleIsAllowedValueModerator() {
         AddUserRequest request = new AddUserRequest("Nickname", "password",
                 new BigDecimal("100"), Role.MODERATOR);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
@@ -226,7 +226,7 @@ class AddUserRequestValidatorTest {
     }
 
     @Test
-    public void shouldReturnError_whenRoleIsAllowedValueAdmin() {
+    public void shouldNotReturnErrors_whenRoleIsAllowedValueAdmin() {
         AddUserRequest request = new AddUserRequest("Nickname", "password",
                 new BigDecimal("100"), Role.ADMIN);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
