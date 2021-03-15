@@ -1,6 +1,7 @@
 package s1vskcsgobet.core.requests.user;
 
 import lombok.Data;
+import s1vskcsgobet.core.domain.Role;
 
 import java.math.BigDecimal;
 
@@ -10,6 +11,6 @@ public class AddUserRequest {
     private String userNickname;
     private String userPassword;
     private BigDecimal userBalance;
-    private String userRole;
+    private Role userRole;
 
 }

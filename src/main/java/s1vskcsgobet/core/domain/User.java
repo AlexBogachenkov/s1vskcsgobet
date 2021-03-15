@@ -20,13 +20,14 @@ public class User {
     private String password;
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private String role;
+    private Role role;
 
     public User() {
     }
 
-    public User(String nickname, String password, BigDecimal balance, String role) {
+    public User(String nickname, String password, BigDecimal balance, Role role) {
         this.nickname = nickname;
         this.password = password;
         this.balance = balance;

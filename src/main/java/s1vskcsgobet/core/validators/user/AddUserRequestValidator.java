@@ -2,6 +2,7 @@ package s1vskcsgobet.core.validators.user;
 
 import org.springframework.stereotype.Component;
 import s1vskcsgobet.core.database.UserRepository;
+import s1vskcsgobet.core.domain.Role;
 import s1vskcsgobet.core.requests.user.AddUserRequest;
 import s1vskcsgobet.core.responses.CoreError;
 
@@ -51,7 +52,7 @@ public class AddUserRequestValidator {
     private Optional<CoreError> validateBalance(AddUserRequest request) {
         if (request.getUserBalance() == null) {
             return Optional.of(new CoreError("User balance", "must not be empty!"));
-        } else if (request.getUserBalance().compareTo(BigDecimal.ZERO) == -1) {
+        } else if (request.getUserBalance().compareTo(BigDecimal.ZERO) < 0) {
             return Optional.of(new CoreError("User balance", "must not be less than 0.00."));
         } else {
             return Optional.empty();
@@ -61,8 +62,8 @@ public class AddUserRequestValidator {
     private Optional<CoreError> validateRole(AddUserRequest request) {
         if (request.getUserRole() == null || request.getUserRole().isBlank()) {
             return Optional.of(new CoreError("User role", "must not be empty!"));
-        } else if (!request.getUserRole().equals("USER") && !request.getUserRole().equals("MODERATOR") &&
-                !request.getUserRole().equals("ADMIN")) {
+        } else if (request.getUserRole() != Role.USER && request.getUserRole() != Role.MODERATOR &&
+                request.getUserRole() != Role.ADMIN) {
             return Optional.of(new CoreError("User role", "must be 'USER' or 'MODERATOR' or 'ADMIN'."));
         } else {
             return Optional.empty();
