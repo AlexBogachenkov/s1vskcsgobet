@@ -60,7 +60,7 @@ public class AddUserRequestValidator {
     }
 
     private Optional<CoreError> validateRole(AddUserRequest request) {
-        if (request.getUserRole() == null || request.getUserRole().isBlank()) {
+        if (request.getUserRole() == null) {
             return Optional.of(new CoreError("User role", "must not be empty!"));
         } else if (request.getUserRole() != Role.USER && request.getUserRole() != Role.MODERATOR &&
                 request.getUserRole() != Role.ADMIN) {

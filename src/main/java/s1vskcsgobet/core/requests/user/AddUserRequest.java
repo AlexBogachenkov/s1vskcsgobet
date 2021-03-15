@@ -13,4 +13,11 @@ public class AddUserRequest {
     private BigDecimal userBalance;
     private Role userRole;
 
+    public AddUserRequest(String userNickname, String userPassword, BigDecimal userBalance, Role userRole) {
+        this.userNickname = userNickname;
+        this.userPassword = userPassword;
+        this.userBalance = userBalance;
+        this.userRole = userRole;
+    }
+
 }
