@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class DeleteUserByNicknameValidator {
+public class DeleteUserByNicknameRequestValidator {
 
     private final UserRepository userRepository;
 
-    public DeleteUserByNicknameValidator(UserRepository userRepository) {
+    public DeleteUserByNicknameRequestValidator(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -7,12 +7,11 @@ import s1vskcsgobet.core.domain.User;
 import s1vskcsgobet.core.requests.user.AddUserRequest;
 import s1vskcsgobet.core.requests.user.DeleteUserByNicknameRequest;
 import s1vskcsgobet.core.responses.CoreError;
-import s1vskcsgobet.core.responses.team.FindAllTeamsResponse;
 import s1vskcsgobet.core.responses.user.AddUserResponse;
 import s1vskcsgobet.core.responses.user.DeleteUserByNicknameResponse;
 import s1vskcsgobet.core.responses.user.FindAllUsersResponse;
 import s1vskcsgobet.core.validators.user.AddUserRequestValidator;
-import s1vskcsgobet.core.validators.user.DeleteUserByNicknameValidator;
+import s1vskcsgobet.core.validators.user.DeleteUserByNicknameRequestValidator;
 
 import java.util.List;
 
@@ -21,12 +20,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AddUserRequestValidator addUserRequestValidator;
-    private final DeleteUserByNicknameValidator deleteUserByNicknameValidator;
+    private final DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator;
 
-    public UserService(UserRepository userRepository, AddUserRequestValidator addUserRequestValidator, DeleteUserByNicknameValidator deleteUserByNicknameValidator) {
+    public UserService(UserRepository userRepository, AddUserRequestValidator addUserRequestValidator, DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator) {
         this.userRepository = userRepository;
         this.addUserRequestValidator = addUserRequestValidator;
-        this.deleteUserByNicknameValidator = deleteUserByNicknameValidator;
+        this.deleteUserByNicknameRequestValidator = deleteUserByNicknameRequestValidator;
     }
 
     public AddUserResponse add(AddUserRequest request) {
@@ -41,7 +40,7 @@ public class UserService {
 
     @Transactional
     public DeleteUserByNicknameResponse deleteByNickname(DeleteUserByNicknameRequest request) {
-        List<CoreError> errors = deleteUserByNicknameValidator.validate(request);
+        List<CoreError> errors = deleteUserByNicknameRequestValidator.validate(request);
         if (!errors.isEmpty()) {
             return new DeleteUserByNicknameResponse(errors);
         }

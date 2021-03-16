@@ -7,4 +7,8 @@ public class DeleteUserByNicknameRequest {
 
     private String nickname;
 
+    public DeleteUserByNicknameRequest(String nickname) {
+        this.nickname = nickname;
+    }
+
 }
