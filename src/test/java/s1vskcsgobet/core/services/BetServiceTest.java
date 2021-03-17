@@ -11,8 +11,10 @@ import s1vskcsgobet.core.database.TeamRepository;
 import s1vskcsgobet.core.domain.Bet;
 import s1vskcsgobet.core.domain.Team;
 import s1vskcsgobet.core.requests.bet.AddBetRequest;
+import s1vskcsgobet.core.requests.bet.DeleteBetByIdRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.bet.AddBetResponse;
+import s1vskcsgobet.core.responses.bet.DeleteBetByIdResponse;
 import s1vskcsgobet.core.validators.bet.AddBetRequestValidator;
 import s1vskcsgobet.core.validators.bet.DeleteBetByIdRequestValidator;
 
@@ -56,6 +58,7 @@ class BetServiceTest {
     public void shouldReturnAddedBet() {
         AddBetRequest request = new AddBetRequest("teamA", "teamB",
                 new BigDecimal("1.23"), new BigDecimal("2.45"), true);
+        Mockito.when(addBetRequestValidator.validate(request)).thenReturn(new ArrayList<>());
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
         Mockito.when(teamRepository.findByNameIgnoreCase("teamA")).thenReturn(Optional.of(teamA));
@@ -66,6 +69,30 @@ class BetServiceTest {
 
         assertFalse(response.hasErrors());
         assertNotNull(response.getAddedBet());
+    }
+
+    @Test
+    public void shouldReturnErrorList_whenDeleteBetByIdRequestValidationNotPassed() {
+        DeleteBetByIdRequest request = new DeleteBetByIdRequest(null);
+        List<CoreError> errors = new ArrayList<>();
+        errors.add(new CoreError("Team ID", "must not be empty!"));
+        Mockito.when(deleteBetByIdRequestValidator.validate(request)).thenReturn(errors);
+        DeleteBetByIdResponse response = betService.deleteById(request);
+
+        assertTrue(response.hasErrors());
+        assertEquals(1, response.getErrors().size());
+        assertEquals("Team ID", response.getErrors().get(0).getField());
+        assertEquals("must not be empty!", response.getErrors().get(0).getMessage());
+    }
+
+    @Test
+    public void shouldReturnIsDeleted() {
+        DeleteBetByIdRequest request = new DeleteBetByIdRequest(10L);
+        Mockito.when(deleteBetByIdRequestValidator.validate(request)).thenReturn(new ArrayList<>());
+        DeleteBetByIdResponse response = betService.deleteById(request);
+
+        assertFalse(response.hasErrors());
+        assertTrue(response.isDeleted());
     }
 
 }
