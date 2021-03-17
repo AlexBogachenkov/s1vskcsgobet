@@ -15,6 +15,7 @@ import s1vskcsgobet.core.requests.bet.DeleteBetByIdRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.bet.AddBetResponse;
 import s1vskcsgobet.core.responses.bet.DeleteBetByIdResponse;
+import s1vskcsgobet.core.responses.bet.FindAllBetsResponse;
 import s1vskcsgobet.core.validators.bet.AddBetRequestValidator;
 import s1vskcsgobet.core.validators.bet.DeleteBetByIdRequestValidator;
 
@@ -93,6 +94,23 @@ class BetServiceTest {
 
         assertFalse(response.hasErrors());
         assertTrue(response.isDeleted());
+    }
+
+    @Test
+    public void shouldReturnFoundBets() {
+        List<Bet> bets = new ArrayList<>();
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        Team teamC = new Team("teamC");
+        Team teamD = new Team("teamD");
+        bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), true));
+        bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), true));
+        Mockito.when(betRepository.findAllByOrderByIdDesc()).thenReturn(bets);
+        FindAllBetsResponse response = betService.findAll();
+
+        assertFalse(response.hasErrors());
+        assertEquals(teamA, response.getAllBets().get(0).getTeamA());
+        assertEquals(teamC, response.getAllBets().get(1).getTeamA());
     }
 
 }
