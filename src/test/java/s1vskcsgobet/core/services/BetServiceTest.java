@@ -1,0 +1,71 @@
+package s1vskcsgobet.core.services;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import s1vskcsgobet.core.database.BetRepository;
+import s1vskcsgobet.core.database.TeamRepository;
+import s1vskcsgobet.core.domain.Bet;
+import s1vskcsgobet.core.domain.Team;
+import s1vskcsgobet.core.requests.bet.AddBetRequest;
+import s1vskcsgobet.core.responses.CoreError;
+import s1vskcsgobet.core.responses.bet.AddBetResponse;
+import s1vskcsgobet.core.validators.bet.AddBetRequestValidator;
+import s1vskcsgobet.core.validators.bet.DeleteBetByIdRequestValidator;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+class BetServiceTest {
+
+    @Mock
+    private BetRepository betRepository;
+    @Mock
+    private TeamRepository teamRepository;
+    @Mock
+    private AddBetRequestValidator addBetRequestValidator;
+    @Mock
+    private DeleteBetByIdRequestValidator deleteBetByIdRequestValidator;
+    @InjectMocks
+    private BetService betService;
+
+    @Test
+    public void shouldReturnErrorList_whenAddBetRequestValidationNotPassed() {
+        AddBetRequest request = new AddBetRequest("", "teamBName",
+                new BigDecimal("1.23"), new BigDecimal("2.45"), true);
+        List<CoreError> errors = new ArrayList<>();
+        errors.add(new CoreError("Team A name", "must not be empty!"));
+        Mockito.when(addBetRequestValidator.validate(request)).thenReturn(errors);
+        AddBetResponse response = betService.add(request);
+
+        assertTrue(response.hasErrors());
+        assertEquals(1, response.getErrors().size());
+        assertEquals("Team A name", response.getErrors().get(0).getField());
+        assertEquals("must not be empty!", response.getErrors().get(0).getMessage());
+    }
+
+    @Test
+    public void shouldReturnAddedBet() {
+        AddBetRequest request = new AddBetRequest("teamA", "teamB",
+                new BigDecimal("1.23"), new BigDecimal("2.45"), true);
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        Mockito.when(teamRepository.findByNameIgnoreCase("teamA")).thenReturn(Optional.of(teamA));
+        Mockito.when(teamRepository.findByNameIgnoreCase("teamB")).thenReturn(Optional.of(teamB));
+        Bet bet = new Bet(teamA, teamB, request.getCoefficientTeamA(), request.getCoefficientTeamB(), request.isActive());
+        Mockito.when(betRepository.save(bet)).thenReturn(bet);
+        AddBetResponse response = betService.add(request);
+
+        assertFalse(response.hasErrors());
+        assertNotNull(response.getAddedBet());
+    }
+
+}
