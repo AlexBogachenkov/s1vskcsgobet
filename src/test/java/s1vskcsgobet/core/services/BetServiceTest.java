@@ -109,6 +109,7 @@ class BetServiceTest {
         FindAllBetsResponse response = betService.findAll();
 
         assertFalse(response.hasErrors());
+        assertEquals(2, response.getAllBets().size());
         assertEquals(teamA, response.getAllBets().get(0).getTeamA());
         assertEquals(teamC, response.getAllBets().get(1).getTeamA());
     }
