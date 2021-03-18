@@ -9,8 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import s1vskcsgobet.core.database.TeamRepository;
 import s1vskcsgobet.core.domain.Team;
 import s1vskcsgobet.core.requests.team.AddTeamRequest;
+import s1vskcsgobet.core.requests.team.DeleteTeamByNameRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.team.AddTeamResponse;
+import s1vskcsgobet.core.responses.team.DeleteTeamByNameResponse;
 import s1vskcsgobet.core.validators.team.AddTeamRequestValidator;
 import s1vskcsgobet.core.validators.team.DeleteTeamByNameRequestValidator;
 
@@ -55,6 +57,32 @@ class TeamServiceTest {
 
         assertFalse(response.hasErrors());
         assertEquals("teamName", response.getAddedTeam().getName());
+    }
+
+    @Test
+    public void shouldReturnErrorList_whenDeleteTeamByNameRequestValidationNotPassed() {
+        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest("");
+        List<CoreError> errors = new ArrayList<>();
+        errors.add(new CoreError("Team name", "must not be empty!"));
+        Mockito.when(deleteTeamByNameRequestValidator.validate(request)).thenReturn(errors);
+        DeleteTeamByNameResponse response = teamService.deleteByName(request);
+
+        assertTrue(response.hasErrors());
+        assertEquals(1, response.getErrors().size());
+        assertEquals("Team name", response.getErrors().get(0).getField());
+        assertEquals("must not be empty!", response.getErrors().get(0).getMessage());
+    }
+
+    @Test
+    public void shouldReturnIsDeleted() {
+        Team team = new Team("teamName");
+        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest(team.getName());
+        Mockito.when(deleteTeamByNameRequestValidator.validate(request)).thenReturn(new ArrayList<>());
+        Mockito.when(teamRepository.deleteByNameIgnoreCase(team.getName())).thenReturn(1);
+        DeleteTeamByNameResponse response = teamService.deleteByName(request);
+
+        assertFalse(response.hasErrors());
+        assertTrue(response.isDeleted());
     }
 
 }
