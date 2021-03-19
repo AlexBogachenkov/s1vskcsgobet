@@ -14,6 +14,7 @@ import s1vskcsgobet.core.requests.user.DeleteUserByNicknameRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.user.AddUserResponse;
 import s1vskcsgobet.core.responses.user.DeleteUserByNicknameResponse;
+import s1vskcsgobet.core.responses.user.FindAllUsersResponse;
 import s1vskcsgobet.core.validators.user.AddUserRequestValidator;
 import s1vskcsgobet.core.validators.user.DeleteUserByNicknameRequestValidator;
 
@@ -88,6 +89,21 @@ class UserServiceTest {
 
         assertFalse(response.hasErrors());
         assertTrue(response.isDeleted());
+    }
+
+    @Test
+    public void shouldReturnAllUsers() {
+        User userA = new User("nicknameA", "passwordA",
+                new BigDecimal("100"), Role.USER);
+        User userB = new User("nicknameB", "passwordB",
+                new BigDecimal("100"), Role.USER);
+        List<User> users = List.of(userA, userB);
+        Mockito.when(userRepository.findAll()).thenReturn(users);
+        FindAllUsersResponse response = userService.findAll();
+
+        assertFalse(response.hasErrors());
+        assertEquals("nicknameA", response.getAllUsers().get(0).getNickname());
+        assertEquals("nicknameB", response.getAllUsers().get(1).getNickname());
     }
 
 }
