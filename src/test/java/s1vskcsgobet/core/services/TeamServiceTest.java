@@ -57,6 +57,7 @@ class TeamServiceTest {
         AddTeamResponse response = teamService.add(request);
 
         assertFalse(response.hasErrors());
+        assertNotNull(response.getAddedTeam());
         assertEquals("teamName", response.getAddedTeam().getName());
     }
 
