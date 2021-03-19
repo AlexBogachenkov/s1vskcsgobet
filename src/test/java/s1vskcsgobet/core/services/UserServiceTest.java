@@ -10,8 +10,10 @@ import s1vskcsgobet.core.database.UserRepository;
 import s1vskcsgobet.core.domain.Role;
 import s1vskcsgobet.core.domain.User;
 import s1vskcsgobet.core.requests.user.AddUserRequest;
+import s1vskcsgobet.core.requests.user.DeleteUserByNicknameRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.user.AddUserResponse;
+import s1vskcsgobet.core.responses.user.DeleteUserByNicknameResponse;
 import s1vskcsgobet.core.validators.user.AddUserRequestValidator;
 import s1vskcsgobet.core.validators.user.DeleteUserByNicknameRequestValidator;
 
@@ -61,6 +63,31 @@ class UserServiceTest {
         assertFalse(response.hasErrors());
         assertNotNull(response.getAddedUser());
         assertEquals("nickname", response.getAddedUser().getNickname());
+    }
+
+    @Test
+    public void shouldReturnErrorList_whenDeleteUserByNicknameRequestValidationNotPassed() {
+        DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest("");
+        List<CoreError> errors = new ArrayList<>();
+        errors.add(new CoreError("User nickname", "must not be empty!"));
+        Mockito.when(deleteUserByNicknameRequestValidator.validate(request)).thenReturn(errors);
+        DeleteUserByNicknameResponse response = userService.deleteByNickname(request);
+
+        assertTrue(response.hasErrors());
+        assertEquals(1, response.getErrors().size());
+        assertEquals("User nickname", response.getErrors().get(0).getField());
+        assertEquals("must not be empty!", response.getErrors().get(0).getMessage());
+    }
+
+    @Test
+    public void shouldReturnIsDeleted() {
+        DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest("nickname");
+        Mockito.when(deleteUserByNicknameRequestValidator.validate(request)).thenReturn(new ArrayList<>());
+        Mockito.when(userRepository.deleteByNicknameIgnoreCase(request.getNickname())).thenReturn(1);
+        DeleteUserByNicknameResponse response = userService.deleteByNickname(request);
+
+        assertFalse(response.hasErrors());
+        assertTrue(response.isDeleted());
     }
 
 }
