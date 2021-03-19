@@ -1,11 +1,13 @@
 package s1vskcsgobet.core.requests.user;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import s1vskcsgobet.core.domain.Role;
 
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
 public class AddUserRequest {
 
     private String userNickname;
