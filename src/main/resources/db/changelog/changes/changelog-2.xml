@@ -22,5 +22,17 @@
     <changeSet id="10" author="alex">
         <modifyDataType tableName="bets" columnName="coefficient_team_b" newDataType="DECIMAL(10,2)"/>
     </changeSet>
+    <changeSet id="11" author="alex">
+        <modifyDataType tableName="users" columnName="password" newDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet id="12" author="alex">
+        <addColumn tableName="bets">
+            <column afterColumn="coefficient_team_b"
+                    name="stage"
+                    type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

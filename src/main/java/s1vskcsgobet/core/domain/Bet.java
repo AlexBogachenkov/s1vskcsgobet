@@ -24,17 +24,20 @@ public class Bet {
     private BigDecimal coefficientTeamA;
     @Column(name = "coefficient_team_b", nullable = false)
     private BigDecimal coefficientTeamB;
+    @Column(name = "stage", nullable = false)
+    private String stage;
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
     public Bet() {
     }
 
-    public Bet(Team teamA, Team teamB, BigDecimal coefficientTeamA, BigDecimal coefficientTeamB, boolean isActive) {
+    public Bet(Team teamA, Team teamB, BigDecimal coefficientTeamA, BigDecimal coefficientTeamB, String stage,  boolean isActive) {
         this.teamA = teamA;
         this.teamB = teamB;
         this.coefficientTeamA = coefficientTeamA;
         this.coefficientTeamB = coefficientTeamB;
+        this.stage = stage;
         this.isActive = isActive;
     }
 }

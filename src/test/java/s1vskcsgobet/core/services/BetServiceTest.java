@@ -43,7 +43,7 @@ class BetServiceTest {
     @Test
     public void shouldReturnErrorList_whenAddBetRequestValidationNotPassed() {
         AddBetRequest request = new AddBetRequest("", "teamBName",
-                new BigDecimal("1.23"), new BigDecimal("2.45"), true);
+                new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true);
         List<CoreError> errors = new ArrayList<>();
         errors.add(new CoreError("Team A name", "must not be empty!"));
         Mockito.when(addBetRequestValidator.validate(request)).thenReturn(errors);
@@ -58,13 +58,14 @@ class BetServiceTest {
     @Test
     public void shouldReturnAddedBet() {
         AddBetRequest request = new AddBetRequest("teamA", "teamB",
-                new BigDecimal("1.23"), new BigDecimal("2.45"), true);
+                new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true);
         Mockito.when(addBetRequestValidator.validate(request)).thenReturn(new ArrayList<>());
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
         Mockito.when(teamRepository.findByNameIgnoreCase("teamA")).thenReturn(Optional.of(teamA));
         Mockito.when(teamRepository.findByNameIgnoreCase("teamB")).thenReturn(Optional.of(teamB));
-        Bet bet = new Bet(teamA, teamB, request.getCoefficientTeamA(), request.getCoefficientTeamB(), request.isActive());
+        Bet bet = new Bet(teamA, teamB, request.getCoefficientTeamA(), request.getCoefficientTeamB(),
+                request.getStage(), request.isActive());
         Mockito.when(betRepository.save(bet)).thenReturn(bet);
         AddBetResponse response = betService.add(request);
 
@@ -103,8 +104,8 @@ class BetServiceTest {
         Team teamB = new Team("teamB");
         Team teamC = new Team("teamC");
         Team teamD = new Team("teamD");
-        bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), true));
-        bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), true));
+        bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true));
+        bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), "Final", true));
         Mockito.when(betRepository.findByIsActiveOrderByIdDesc(true)).thenReturn(bets);
         FindAllBetsResponse response = betService.findActive();
 
@@ -121,8 +122,8 @@ class BetServiceTest {
         Team teamB = new Team("teamB");
         Team teamC = new Team("teamC");
         Team teamD = new Team("teamD");
-        bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), true));
-        bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), false));
+        bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true));
+        bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), "Final", false));
         Mockito.when(betRepository.findAllByOrderByIdDesc()).thenReturn(bets);
         FindAllBetsResponse response = betService.findAll();
 

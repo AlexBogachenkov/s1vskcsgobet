@@ -15,6 +15,7 @@
     <input type="text" id="bet-to-add-team-b-name" placeholder="Team B name">
     <input type="number" id="bet-to-add-team-a-coefficient" step=".01" placeholder="Team A coefficient">
     <input type="number" id="bet-to-add-team-b-coefficient" step=".01" placeholder="Team B coefficient">
+    <input type="text" id="bet-to-add-stage" placeholder="Stage">
     <label for="bet-to-add-is-active">Is active:</label>
     <select name="status" id="bet-to-add-is-active">
         <option value="true">true</option>
@@ -88,6 +89,7 @@
         let teamBName = document.getElementById("bet-to-add-team-b-name").value;
         let teamACoefficient = document.getElementById("bet-to-add-team-a-coefficient").value;
         let teamBCoefficient = document.getElementById("bet-to-add-team-b-coefficient").value;
+        let stage = document.getElementById("bet-to-add-stage").value;
         let isActive = document.getElementById("bet-to-add-is-active").value;
         let url = "/bet";
 
@@ -100,6 +102,7 @@
             "teamBName": teamBName,
             "coefficientTeamA": teamACoefficient,
             "coefficientTeamB": teamBCoefficient,
+            "stage": stage,
             "active": isActive
         });
         xhr.send(request);
@@ -149,7 +152,7 @@
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     let responseObject = JSON.parse(this.responseText);
                     for (let i = 0; i < responseObject.allBets.length; i++) {
-                        document.getElementById("all-bets").innerHTML += "ID: " + responseObject.allBets[i].id + ", team A name: '" + responseObject.allBets[i].teamA.name + "', team A coefficient: " + responseObject.allBets[i].coefficientTeamA + ", team B name: '" + responseObject.allBets[i].teamB.name + "', team B coefficient: " + responseObject.allBets[i].coefficientTeamB + ", is active: " + responseObject.allBets[i].active + ".<br>";
+                        document.getElementById("all-bets").innerHTML += "ID: " + responseObject.allBets[i].id + ", team A name: '" + responseObject.allBets[i].teamA.name + "', team A coefficient: " + responseObject.allBets[i].coefficientTeamA + ", team B name: '" + responseObject.allBets[i].teamB.name + "', team B coefficient: " + responseObject.allBets[i].coefficientTeamB + ", stage: " + responseObject.allBets[i].stage + ", is active: " + responseObject.allBets[i].active + ".<br>";
                     }
                 }
             };
@@ -227,9 +230,9 @@
             xhr.send();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    let responseList = JSON.parse(this.responseText);
-                    for (let i = 0; i < responseList.allUsers.length; i++) {
-                        document.getElementById("all-users").innerHTML += "ID: " + responseList.allUsers[i].id + ", nickname: '" + responseList.allUsers[i].nickname + "', balance: " + responseList.allUsers[i].balance + ", role: '" + responseList.allUsers[i].role + "'.<br>";
+                    let responseObject = JSON.parse(this.responseText);
+                    for (let i = 0; i < responseObject.allUsers.length; i++) {
+                        document.getElementById("all-users").innerHTML += "ID: " + responseObject.allUsers[i].id + ", nickname: '" + responseObject.allUsers[i].nickname + "', balance: " + responseObject.allUsers[i].balance + ", role: '" + responseObject.allUsers[i].role + "'.<br>";
                     }
                 }
             };
@@ -299,9 +302,9 @@
             xhr.send();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    let responseList = JSON.parse(this.responseText);
-                    for (let i = 0; i < responseList.allTeams.length; i++) {
-                        document.getElementById("all-teams").innerHTML += "ID: " + responseList.allTeams[i].id + ", name: " + responseList.allTeams[i].name + ".<br>";
+                    let responseObject = JSON.parse(this.responseText);
+                    for (let i = 0; i < responseObject.allTeams.length; i++) {
+                        document.getElementById("all-teams").innerHTML += "ID: " + responseObject.allTeams[i].id + ", name: " + responseObject.allTeams[i].name + ".<br>";
                     }
                 }
             };

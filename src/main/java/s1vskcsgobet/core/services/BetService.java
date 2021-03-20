@@ -41,7 +41,8 @@ public class BetService {
         }
         Team teamA = teamRepository.findByNameIgnoreCase(request.getTeamAName()).get();
         Team teamB = teamRepository.findByNameIgnoreCase(request.getTeamBName()).get();
-        Bet bet = new Bet(teamA, teamB, request.getCoefficientTeamA(), request.getCoefficientTeamB(), request.isActive());
+        Bet bet = new Bet(teamA, teamB, request.getCoefficientTeamA(), request.getCoefficientTeamB(),
+                request.getStage(), request.isActive());
         Bet addedBet = betRepository.save(bet);
         return new AddBetResponse(addedBet);
     }
