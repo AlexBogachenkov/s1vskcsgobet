@@ -3,11 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Bets</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body>
 
+<h1>Available bets:</h1>
+<div id="active-bets"></div>
 
 <script>
+
+    window.onload = function () {
+        findActiveBets();
+    };
+
+    function findActiveBets() {
+        let url = "/bet?isActive=true";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                for (let i = 0; i < responseObject.allBets.length; i++) {
+                    let table = document.createElement("table");
+                    let firstRow = document.createElement("tr");
+                    let secondRow = document.createElement("tr");
+                    let stage = document.createElement("th");
+                    stage.appendChild(document.createTextNode(responseObject.allBets[i].stage));
+                    let firstCoefficient = document.createElement("th");
+                    firstCoefficient.appendChild(document.createTextNode("1"));
+                    let secondCoefficient = document.createElement("th");
+                    secondCoefficient.appendChild(document.createTextNode("2"));
+                    let teamNames = document.createElement("td");
+                    teamNames.appendChild(document.createTextNode(responseObject.allBets[i].teamA.name + " VS " + responseObject.allBets[i].teamB.name));
+                    let teamACoefficient = document.createElement("td");
+                    teamACoefficient.appendChild(document.createTextNode(responseObject.allBets[i].coefficientTeamA));
+                    let teamBCoefficient = document.createElement("td");
+                    teamBCoefficient.appendChild(document.createTextNode(responseObject.allBets[i].coefficientTeamB));
+                    firstRow.appendChild(stage);
+                    firstRow.appendChild(firstCoefficient);
+                    firstRow.appendChild(secondCoefficient);
+                    secondRow.appendChild(teamNames);
+                    secondRow.appendChild(teamACoefficient);
+                    secondRow.appendChild(teamBCoefficient);
+                    table.appendChild(firstRow);
+                    table.appendChild(secondRow);
+                    table.classList.add("bet-table");
+
+                    document.getElementById("active-bets").appendChild(table);
+                }
+            }
+        };
+    }
 
 </script>
 </body>
