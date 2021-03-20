@@ -56,6 +56,11 @@ public class BetService {
         return new DeleteBetByIdResponse(true);
     }
 
+    public FindAllBetsResponse findActive() {
+        List<Bet> activeBets = betRepository.findByIsActiveOrderByIdDesc(true);
+        return new FindAllBetsResponse(activeBets);
+    }
+
     public FindAllBetsResponse findAll() {
         List<Bet> allBets = betRepository.findAllByOrderByIdDesc();
         return new FindAllBetsResponse(allBets);

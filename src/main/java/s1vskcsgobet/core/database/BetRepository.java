@@ -11,6 +11,8 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
 
     List<Bet> findAllByOrderByIdDesc();
 
+    List<Bet> findByIsActiveOrderByIdDesc(boolean isActive);
+
     boolean existsById(Long id);
 
 }

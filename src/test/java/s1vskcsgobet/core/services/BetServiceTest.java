@@ -97,7 +97,7 @@ class BetServiceTest {
     }
 
     @Test
-    public void shouldReturnFoundBets() {
+    public void shouldReturnActiveBets() {
         List<Bet> bets = new ArrayList<>();
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
@@ -105,6 +105,24 @@ class BetServiceTest {
         Team teamD = new Team("teamD");
         bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), true));
         bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), true));
+        Mockito.when(betRepository.findByIsActiveOrderByIdDesc(true)).thenReturn(bets);
+        FindAllBetsResponse response = betService.findActive();
+
+        assertFalse(response.hasErrors());
+        assertEquals(2, response.getAllBets().size());
+        assertEquals(teamA, response.getAllBets().get(0).getTeamA());
+        assertEquals(teamC, response.getAllBets().get(1).getTeamA());
+    }
+
+    @Test
+    public void shouldReturnAllBets() {
+        List<Bet> bets = new ArrayList<>();
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        Team teamC = new Team("teamC");
+        Team teamD = new Team("teamD");
+        bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), true));
+        bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), false));
         Mockito.when(betRepository.findAllByOrderByIdDesc()).thenReturn(bets);
         FindAllBetsResponse response = betService.findAll();
 
