@@ -18,22 +18,19 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    @PostMapping(path = "/add",
-            consumes = "application/json",
-            produces = "application/json")
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public AddUserResponse addUser(@RequestBody AddUserRequest request) {
         return userService.add(request);
     }
 
-    @DeleteMapping(path = "/deleteByNickname",
-            consumes = "application/json",
-            produces = "application/json")
-    public DeleteUserByNicknameResponse deleteUserByNickname(@RequestBody DeleteUserByNicknameRequest request) {
+    @DeleteMapping(path = "/{nickname}", produces = "application/json")
+    public DeleteUserByNicknameResponse deleteUserByNickname(@PathVariable String nickname) {
+        DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest();
+        request.setNickname(nickname);
         return userService.deleteByNickname(request);
     }
 
-    @GetMapping(path = "/findAll",
-            produces = "application/json")
+    @GetMapping(produces = "application/json")
     public FindAllUsersResponse findAllTeams() {
         return userService.findAll();
     }

@@ -165,7 +165,7 @@
         let password = document.getElementById("user-to-add-password").value;
         let balance = document.getElementById("user-to-add-balance").value;
         let role = document.getElementById("user-to-add-role").value;
-        let url = "/user/add";
+        let url = "/user";
 
         let xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
@@ -193,14 +193,11 @@
 
     function sendDeleteUserRequest() {
         let nickname = document.getElementById("user-to-delete-nickname").value;
-        let url = "/user/deleteByNickname";
+        let url = "/user/" + nickname;
 
         let xhr = new XMLHttpRequest();
         xhr.open("DELETE", url, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-
-        let request = JSON.stringify({"nickname": nickname});
-        xhr.send(request);
+        xhr.send();
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -220,7 +217,7 @@
     }
 
     function sendFindAllUsersRequest() {
-        let url = "/user/findAll";
+        let url = "/user";
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
 
