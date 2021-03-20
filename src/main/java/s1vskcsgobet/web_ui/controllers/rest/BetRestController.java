@@ -18,22 +18,19 @@ public class BetRestController {
         this.betService = betService;
     }
 
-    @PostMapping(path = "/add",
-            consumes = "application/json",
-            produces = "application/json")
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public AddBetResponse addBet(@RequestBody AddBetRequest request) {
         return betService.add(request);
     }
 
-    @DeleteMapping(path = "/deleteById",
-            consumes = "application/json",
-            produces = "application/json")
-    public DeleteBetByIdResponse deleteBetById(@RequestBody DeleteBetByIdRequest request) {
+    @DeleteMapping(path = "/{id}", produces = "application/json")
+    public DeleteBetByIdResponse deleteBetById(@PathVariable Long id) {
+        DeleteBetByIdRequest request = new DeleteBetByIdRequest();
+        request.setBetId(id);
         return betService.deleteById(request);
     }
 
-    @GetMapping(path = "/findAll",
-            produces = "application/json")
+    @GetMapping(produces = "application/json")
     public FindAllBetsResponse findAllBets() {
         return betService.findAll();
     }

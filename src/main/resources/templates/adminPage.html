@@ -89,7 +89,7 @@
         let teamACoefficient = document.getElementById("bet-to-add-team-a-coefficient").value;
         let teamBCoefficient = document.getElementById("bet-to-add-team-b-coefficient").value;
         let isActive = document.getElementById("bet-to-add-is-active").value;
-        let url = "/bet/add";
+        let url = "/bet";
 
         let xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
@@ -118,14 +118,11 @@
 
     function sendDeleteBetRequest() {
         let betId = document.getElementById("bet-to-delete-id").value;
-        let url = "/bet/deleteById";
-
+        let url = "/bet/" + betId;
         let xhr = new XMLHttpRequest();
-        xhr.open("DELETE", url, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
 
-        let request = JSON.stringify({"betId": betId});
-        xhr.send(request);
+        xhr.open("DELETE", url, true);
+        xhr.send();
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -140,7 +137,7 @@
     }
 
     function sendFindAllBetsRequest() {
-        let url = "/bet/findAll";
+        let url = "/bet";
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
 
@@ -151,7 +148,6 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     let responseObject = JSON.parse(this.responseText);
-                    console.log(responseObject);
                     for (let i = 0; i < responseObject.allBets.length; i++) {
                         document.getElementById("all-bets").innerHTML += "ID: " + responseObject.allBets[i].id + ", team A name: '" + responseObject.allBets[i].teamA.name + "', team A coefficient: " + responseObject.allBets[i].coefficientTeamA + ", team B name: '" + responseObject.allBets[i].teamB.name + "', team B coefficient: " + responseObject.allBets[i].coefficientTeamB + ", is active: " + responseObject.allBets[i].active + ".<br>";
                     }
