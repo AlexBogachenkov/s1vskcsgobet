@@ -1,11 +1,13 @@
 package s1vskcsgobet.core.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "bets")
 public class Bet {
@@ -29,9 +31,6 @@ public class Bet {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-    public Bet() {
-    }
-
     public Bet(Team teamA, Team teamB, BigDecimal coefficientTeamA, BigDecimal coefficientTeamB, String stage,  boolean isActive) {
         this.teamA = teamA;
         this.teamB = teamB;
@@ -40,4 +39,5 @@ public class Bet {
         this.stage = stage;
         this.isActive = isActive;
     }
+
 }

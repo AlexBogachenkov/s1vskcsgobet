@@ -1,10 +1,12 @@
 package s1vskcsgobet.core.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "teams")
 public class Team {
@@ -16,10 +18,8 @@ public class Team {
     @Column(name = "name", nullable = false)
     private String name;
 
-    public Team() {
-    }
-
     public Team(String name) {
         this.name = name;
     }
+
 }

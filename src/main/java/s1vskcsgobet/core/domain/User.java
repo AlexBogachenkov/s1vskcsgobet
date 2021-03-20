@@ -1,11 +1,13 @@
 package s1vskcsgobet.core.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -24,13 +26,11 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    public User() {
-    }
-
     public User(String nickname, String password, BigDecimal balance, Role role) {
         this.nickname = nickname;
         this.password = password;
         this.balance = balance;
         this.role = role;
     }
+
 }
