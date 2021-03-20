@@ -119,8 +119,8 @@
     function sendDeleteBetRequest() {
         let betId = document.getElementById("bet-to-delete-id").value;
         let url = "/bet/" + betId;
-        let xhr = new XMLHttpRequest();
 
+        let xhr = new XMLHttpRequest();
         xhr.open("DELETE", url, true);
         xhr.send();
 
@@ -137,11 +137,11 @@
     }
 
     function sendFindAllBetsRequest() {
+        let findAllBetsBtn = document.getElementById("find-all-bets-btn");
         let url = "/bet";
+
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
-
-        let findAllBetsBtn = document.getElementById("find-all-bets-btn");
 
         if (findAllBetsBtn.innerText === "Find all bets") {
             xhr.send();
@@ -245,7 +245,7 @@
 
     function sendAddTeamRequest() {
         let teamName = document.getElementById("team-to-add-name").value;
-        let url = "/team/add";
+        let url = "/team";
 
         let xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
@@ -268,14 +268,11 @@
 
     function sendDeleteTeamRequest() {
         let teamName = document.getElementById("team-to-delete-name").value;
-        let url = "/team/deleteByName";
+        let url = "/team/" + teamName;
 
         let xhr = new XMLHttpRequest();
         xhr.open("DELETE", url, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-
-        let request = JSON.stringify({"teamName": teamName});
-        xhr.send(request);
+        xhr.send();
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -295,7 +292,7 @@
     }
 
     function sendFindAllTeamsRequest() {
-        let url = "/team/findAll";
+        let url = "/team";
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
 

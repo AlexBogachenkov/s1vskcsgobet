@@ -18,22 +18,19 @@ public class TeamRestController {
         this.teamService = teamService;
     }
 
-    @PostMapping(path = "/add",
-            consumes = "application/json",
-            produces = "application/json")
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public AddTeamResponse addTeam(@RequestBody AddTeamRequest request) {
         return teamService.add(request);
     }
 
-    @DeleteMapping(path = "/deleteByName",
-            consumes = "application/json",
-            produces = "application/json")
-    public DeleteTeamByNameResponse deleteTeamByName(@RequestBody DeleteTeamByNameRequest request) {
+    @DeleteMapping(path = "/{name}", produces = "application/json")
+    public DeleteTeamByNameResponse deleteTeamByName(@PathVariable String name) {
+        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest();
+        request.setTeamName(name);
         return teamService.deleteByName(request);
     }
 
-    @GetMapping(path = "/findAll",
-            produces = "application/json")
+    @GetMapping(produces = "application/json")
     public FindAllTeamsResponse findAllTeams() {
         return teamService.findAll();
     }
