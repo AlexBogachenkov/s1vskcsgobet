@@ -31,10 +31,7 @@ public class BetRestController {
     }
 
     @GetMapping(produces = "application/json")
-    public FindAllBetsResponse findAllBets(@RequestParam(required = false) boolean isActive) {
-        if (isActive) {
-            return betService.findActive();
-        }
+    public FindAllBetsResponse findAllBets() {
         return betService.findAll();
     }
 
