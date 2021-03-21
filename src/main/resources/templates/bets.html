@@ -43,14 +43,17 @@
     </table>
 </div>
 
-<div id="makeBetPopup" class="popup">
+<div id="make-bet-popup" class="popup">
 
     <div class="popup-content">
         <span class="close-btn">&times;</span>
         <p id="stage"></p>
         <p id="teams"></p>
-        <p id="winningTeam"></p>
+        <p id="winning-team"></p>
         <p id="coefficient"></p>
+        <input id="user-id-to-make-bet" placeholder="User ID">
+        <input id="bet-amount" placeholder="Amount">
+        <button id="make-bet-btn">Make bet</button>
     </div>
 
 </div>
@@ -60,21 +63,32 @@
     function showMakeBetPopup(betId, stage, teamAName, teamBName, winningTeamName, winningTeamCoefficient) {
         document.getElementById("stage").innerText = stage;
         document.getElementById("teams").innerText = teamAName + " VS " + teamBName;
-        document.getElementById("winningTeam").innerText = winningTeamName;
+        document.getElementById("winning-team").innerText = winningTeamName;
         document.getElementById("coefficient").innerText = winningTeamCoefficient;
-        let popup = document.getElementById("makeBetPopup");
+        let popup = document.getElementById("make-bet-popup");
         let span = document.getElementsByClassName("close-btn")[0];
+        let btn = document.getElementById("make-bet-btn");
         popup.style.display = "block";
 
         span.onclick = function () {
             popup.style.display = "none";
         }
 
+        btn.onclick = function () {
+            sendAddUserBetRequest(betId, winningTeamName);
+        };
+
         window.onclick = function (event) {
             if (event.target === popup) {
                 popup.style.display = "none";
             }
         }
+    }
+
+    function sendAddUserBetRequest(betId, winningTeamName) {
+        let userId = document.getElementById("user-id-to-make-bet").value;
+        let amount = document.getElementById("bet-amount").value;
+
     }
 
 </script>
