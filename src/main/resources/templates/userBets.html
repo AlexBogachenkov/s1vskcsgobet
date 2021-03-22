@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User bets</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+
+<h1>Available bets:</h1>
+<div th:if="${userBets != null}">
+    <table>
+        <tr th:each="userBet : ${userBets}">
+            <td>
+                <table>
+                    <tr>
+                        <td th:text="${userBet.bet.stage}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${userBet.bet.teamA.name + ' VS ' + userBet.bet.teamB.name}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${userBet.winningTeam.name}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${userBet.winningTeamCoefficient}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${userBet.amount}"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<div th:if="${errors != null}">
+    <table>
+        <tr th:each="error : ${errors}">
+            <td th:text="${error.field + ' ' + error.message}"></td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

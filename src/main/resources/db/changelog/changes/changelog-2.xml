@@ -34,5 +34,17 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="13" author="alex">
+        <modifyDataType tableName="user_bets" columnName="amount" newDataType="DECIMAL(10,2)"/>
+    </changeSet>
+    <changeSet id="14" author="alex">
+        <addColumn tableName="user_bets">
+            <column afterColumn="winning_team_id"
+                    name="winning_team_coefficient"
+                    type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

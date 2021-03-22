@@ -12,12 +12,14 @@ public class AddUserBetRequest {
     private Long userId;
     private Long betId;
     private String winningTeamName;
+    private BigDecimal winningTeamCoefficient;
     private BigDecimal amount;
 
-    public AddUserBetRequest(Long userId, Long betId, String winningTeamName, BigDecimal amount) {
+    public AddUserBetRequest(Long userId, Long betId, String winningTeamName, BigDecimal winningTeamCoefficient, BigDecimal amount) {
         this.userId = userId;
         this.betId = betId;
         this.winningTeamName = winningTeamName;
+        this.winningTeamCoefficient = winningTeamCoefficient;
         this.amount = amount;
     }
 

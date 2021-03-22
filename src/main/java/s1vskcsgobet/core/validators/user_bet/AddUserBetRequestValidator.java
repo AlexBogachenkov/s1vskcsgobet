@@ -30,6 +30,7 @@ public class AddUserBetRequestValidator {
         validateUserId(request.getUserId()).ifPresent(errors::add);
         validateBetId(request.getBetId()).ifPresent(errors::add);
         validateWinningTeamName(request.getWinningTeamName()).ifPresent(errors::add);
+        validateWinningTeamCoefficient(request.getWinningTeamCoefficient()).ifPresent(errors::add);
         validateAmount(request.getUserId(), request.getAmount()).ifPresent(errors::add);
         return errors;
     }
@@ -59,6 +60,16 @@ public class AddUserBetRequestValidator {
             return Optional.of(new CoreError("Winning team name", "must not be empty!"));
         } else if (!teamRepository.existsByNameIgnoreCase(winningTeamName)) {
             return Optional.of(new CoreError("Team name", "Team with this property not found."));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<CoreError> validateWinningTeamCoefficient(BigDecimal coefficient) {
+        if (coefficient == null) {
+            return Optional.of(new CoreError("Winning team coefficient", "must not be empty!"));
+        } else if (coefficient.compareTo(new BigDecimal("1.00")) < 0) {
+            return Optional.of(new CoreError("Winning team coefficient", "must be equal to or greater than 1.00."));
         } else {
             return Optional.empty();
         }
