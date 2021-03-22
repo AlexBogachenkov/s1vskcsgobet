@@ -7,6 +7,7 @@ import s1vskcsgobet.core.database.TeamRepository;
 import s1vskcsgobet.core.database.UserBetRepository;
 import s1vskcsgobet.core.database.UserRepository;
 import s1vskcsgobet.core.domain.*;
+import s1vskcsgobet.core.requests.user.WithdrawFromUserBalanceRequest;
 import s1vskcsgobet.core.requests.user_bet.AddUserBetRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.user_bet.AddUserBetResponse;
@@ -22,14 +23,17 @@ public class UserBetService {
     private UserRepository userRepository;
     private BetRepository betRepository;
     private TeamRepository teamRepository;
+    private UserService userService;
 
     public UserBetService(AddUserBetRequestValidator validator, UserBetRepository userBetRepository,
-                          UserRepository userRepository, BetRepository betRepository, TeamRepository teamRepository) {
+                          UserRepository userRepository, BetRepository betRepository,
+                          TeamRepository teamRepository, UserService userService) {
         this.validator = validator;
         this.userBetRepository = userBetRepository;
         this.userRepository = userRepository;
         this.betRepository = betRepository;
         this.teamRepository = teamRepository;
+        this.userService = userService;
     }
 
     @Transactional
@@ -38,6 +42,7 @@ public class UserBetService {
         if (!errors.isEmpty()) {
             return new AddUserBetResponse(errors);
         }
+        userService.withdrawFromBalance(new WithdrawFromUserBalanceRequest(request.getUserId(), request.getAmount()));
         User user = userRepository.findById(request.getUserId()).get();
         Bet bet = betRepository.findById(request.getBetId()).get();
         Team winningTeam = teamRepository.findByNameIgnoreCase(request.getWinningTeamName()).get();
