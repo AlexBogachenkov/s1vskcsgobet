@@ -1,11 +1,13 @@
 package s1vskcsgobet.core.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "user_bets")
 public class UserBet {
@@ -25,7 +27,16 @@ public class UserBet {
     private Team winningTeam;
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private UserBetStatus status;
+
+    public UserBet(User user, Bet bet, Team winningTeam, BigDecimal amount, UserBetStatus status) {
+        this.user = user;
+        this.bet = bet;
+        this.winningTeam = winningTeam;
+        this.amount = amount;
+        this.status = status;
+    }
 
 }

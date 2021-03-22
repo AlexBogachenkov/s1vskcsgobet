@@ -88,7 +88,31 @@
     function sendAddUserBetRequest(betId, winningTeamName) {
         let userId = document.getElementById("user-id-to-make-bet").value;
         let amount = document.getElementById("bet-amount").value;
+        let url = "/userBet";
 
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({
+            "userId": userId,
+            "betId": betId,
+            "winningTeamName": winningTeamName,
+            "amount": amount
+        });
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    document.getElementById("make-bet-popup").style.display = "none";
+                    alert("✔ Your bet has been made");
+                }
+            }
+        };
     }
 
 </script>
