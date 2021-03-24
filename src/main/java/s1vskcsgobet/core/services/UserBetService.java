@@ -9,6 +9,7 @@ import s1vskcsgobet.core.database.UserRepository;
 import s1vskcsgobet.core.domain.*;
 import s1vskcsgobet.core.requests.user.WithdrawFromUserBalanceRequest;
 import s1vskcsgobet.core.requests.user_bet.AddUserBetRequest;
+import s1vskcsgobet.core.requests.user_bet.ApplyMatchResultToUserBetsRequest;
 import s1vskcsgobet.core.requests.user_bet.FindUserBetsByUserIdRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.user_bet.AddUserBetResponse;
@@ -65,6 +66,14 @@ public class UserBetService {
         }
         List<UserBet> userBets = userBetRepository.findByUserIdOrderByIdDesc(request.getUserId());
         return new FindUserBetsByUserIdResponse(null, userBets);
+    }
+
+    @Transactional
+    public void applyMatchResult(ApplyMatchResultToUserBetsRequest request) {
+        userBetRepository.updateStatusByBetIdAndWinningTeamName(request.getBetId(), request.getWinningTeamName(),
+                UserBetStatus.WON);
+        userBetRepository.updateStatusByBetIdAndNotWinningTeamName(request.getBetId(), request.getWinningTeamName(),
+                UserBetStatus.LOST);
     }
 
 }

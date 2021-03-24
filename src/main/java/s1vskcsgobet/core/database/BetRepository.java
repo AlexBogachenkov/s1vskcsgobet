@@ -1,6 +1,8 @@
 package s1vskcsgobet.core.database;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import s1vskcsgobet.core.domain.Bet;
 
@@ -14,5 +16,9 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
     List<Bet> findByIsActiveOrderByIdDesc(boolean isActive);
 
     boolean existsById(Long id);
+
+    @Modifying
+    @Query("FROM Bet b WHERE (SELECT COUNT(b) from Bet b WHERE b.id = :id AND b.teamA.name = :teamName OR b.teamB.name = :teamName) > 0")
+    boolean existsByIdAndTeamName(Long id, String teamName);
 
 }
