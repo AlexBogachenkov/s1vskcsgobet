@@ -6,6 +6,7 @@ import s1vskcsgobet.core.database.UserRepository;
 import s1vskcsgobet.core.domain.User;
 import s1vskcsgobet.core.requests.user.AddUserRequest;
 import s1vskcsgobet.core.requests.user.DeleteUserByNicknameRequest;
+import s1vskcsgobet.core.requests.user.TopUpUserBalanceRequest;
 import s1vskcsgobet.core.requests.user.WithdrawFromUserBalanceRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.user.AddUserResponse;
@@ -47,6 +48,13 @@ public class UserService {
         }
         int deletedUserCount = userRepository.deleteByNicknameIgnoreCase(request.getNickname());
         return new DeleteUserByNicknameResponse(deletedUserCount > 0);
+    }
+
+    @Transactional
+    public void topUpBalance(TopUpUserBalanceRequest request){
+        User user = userRepository.findById(request.getUserId()).get();
+        user.setBalance(user.getBalance().add(request.getAmount()));
+        userRepository.save(user);
     }
 
     @Transactional

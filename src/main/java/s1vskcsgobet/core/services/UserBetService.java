@@ -7,6 +7,7 @@ import s1vskcsgobet.core.database.TeamRepository;
 import s1vskcsgobet.core.database.UserBetRepository;
 import s1vskcsgobet.core.database.UserRepository;
 import s1vskcsgobet.core.domain.*;
+import s1vskcsgobet.core.requests.user.TopUpUserBalanceRequest;
 import s1vskcsgobet.core.requests.user.WithdrawFromUserBalanceRequest;
 import s1vskcsgobet.core.requests.user_bet.AddUserBetRequest;
 import s1vskcsgobet.core.requests.user_bet.ApplyMatchResultToUserBetsRequest;
@@ -17,6 +18,9 @@ import s1vskcsgobet.core.responses.user_bet.FindUserBetsByUserIdResponse;
 import s1vskcsgobet.core.validators.user_bet.AddUserBetRequestValidator;
 import s1vskcsgobet.core.validators.user_bet.FindUserBetsByUserIdRequestValidator;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -74,6 +78,20 @@ public class UserBetService {
                 UserBetStatus.WON);
         userBetRepository.updateStatusByBetIdAndNotWinningTeamName(request.getBetId(), request.getWinningTeamName(),
                 UserBetStatus.LOST);
+
+        List<UserBet> winningUserBets = userBetRepository.findByBetIdAndStatus(request.getBetId(), UserBetStatus.WON);
+        winningUserBets.forEach(userBet -> {
+            BigDecimal amountWon = userBet.getAmount().multiply(userBet.getWinningTeamCoefficient());
+            amountWon = amountWon.setScale(2, RoundingMode.HALF_EVEN);
+            userService.topUpBalance(new TopUpUserBalanceRequest(userBet.getUser().getId(), amountWon));
+        });
+
+        List<UserBet> lostUserBets = userBetRepository.findByBetIdAndStatus(request.getBetId(), UserBetStatus.LOST);
+        lostUserBets.forEach(userBet -> {
+            BigDecimal amountLost = userBet.getAmount().multiply(userBet.getWinningTeamCoefficient());
+            amountLost = amountLost.setScale(2, RoundingMode.HALF_EVEN);
+            userService.withdrawFromBalance(new WithdrawFromUserBalanceRequest(userBet.getUser().getId(), amountLost));
+        });
     }
 
 }
