@@ -14,12 +14,13 @@ import s1vskcsgobet.core.requests.user_bet.ApplyMatchResultToUserBetsRequest;
 import s1vskcsgobet.core.requests.user_bet.FindUserBetsByUserIdRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.user_bet.AddUserBetResponse;
+import s1vskcsgobet.core.responses.user_bet.ApplyMatchResultToUserBetsResponse;
 import s1vskcsgobet.core.responses.user_bet.FindUserBetsByUserIdResponse;
 import s1vskcsgobet.core.validators.user_bet.AddUserBetRequestValidator;
+import s1vskcsgobet.core.validators.user_bet.ApplyMatchResultToUserBetsRequestValidator;
 import s1vskcsgobet.core.validators.user_bet.FindUserBetsByUserIdRequestValidator;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class UserBetService {
 
     private AddUserBetRequestValidator addUserBetRequestValidator;
     private FindUserBetsByUserIdRequestValidator findUserBetsByUserIdRequestValidator;
+    private ApplyMatchResultToUserBetsRequestValidator applyMatchResultToUserBetsRequestValidator;
     private UserBetRepository userBetRepository;
     private UserRepository userRepository;
     private BetRepository betRepository;
@@ -36,10 +38,12 @@ public class UserBetService {
 
     public UserBetService(AddUserBetRequestValidator addUserBetRequestValidator,
                           FindUserBetsByUserIdRequestValidator findUserBetsByUserIdRequestValidator,
-                          UserBetRepository userBetRepository, UserRepository userRepository,
-                          BetRepository betRepository, TeamRepository teamRepository, UserService userService) {
+                          ApplyMatchResultToUserBetsRequestValidator applyMatchResultToUserBetsRequestValidator,
+                          UserBetRepository userBetRepository, UserRepository userRepository, BetRepository betRepository,
+                          TeamRepository teamRepository, UserService userService) {
         this.addUserBetRequestValidator = addUserBetRequestValidator;
         this.findUserBetsByUserIdRequestValidator = findUserBetsByUserIdRequestValidator;
+        this.applyMatchResultToUserBetsRequestValidator = applyMatchResultToUserBetsRequestValidator;
         this.userBetRepository = userBetRepository;
         this.userRepository = userRepository;
         this.betRepository = betRepository;
@@ -73,25 +77,23 @@ public class UserBetService {
     }
 
     @Transactional
-    public void applyMatchResult(ApplyMatchResultToUserBetsRequest request) {
-        userBetRepository.updateStatusByBetIdAndWinningTeamName(request.getBetId(), request.getWinningTeamName(),
-                UserBetStatus.WON);
-        userBetRepository.updateStatusByBetIdAndNotWinningTeamName(request.getBetId(), request.getWinningTeamName(),
-                UserBetStatus.LOST);
+    public ApplyMatchResultToUserBetsResponse applyMatchResult(ApplyMatchResultToUserBetsRequest request) {
+        List<CoreError> errors = applyMatchResultToUserBetsRequestValidator.validate(request);
+        if (!errors.isEmpty()) {
+            return new ApplyMatchResultToUserBetsResponse(errors);
+        }
+        Long winningTeamId = teamRepository.findByNameIgnoreCase(request.getWinningTeamName()).get().getId();
+        userBetRepository.updateStatusByBetIdAndWinningTeamName(request.getBetId(), winningTeamId, UserBetStatus.WON);
+        userBetRepository.updateStatusByBetIdAndNotWinningTeamName(request.getBetId(), winningTeamId, UserBetStatus.LOST);
 
         List<UserBet> winningUserBets = userBetRepository.findByBetIdAndStatus(request.getBetId(), UserBetStatus.WON);
         winningUserBets.forEach(userBet -> {
             BigDecimal amountWon = userBet.getAmount().multiply(userBet.getWinningTeamCoefficient());
-            amountWon = amountWon.setScale(2, RoundingMode.HALF_EVEN);
+            amountWon = amountWon.setScale(2, RoundingMode.HALF_UP);
             userService.topUpBalance(new TopUpUserBalanceRequest(userBet.getUser().getId(), amountWon));
         });
 
-        List<UserBet> lostUserBets = userBetRepository.findByBetIdAndStatus(request.getBetId(), UserBetStatus.LOST);
-        lostUserBets.forEach(userBet -> {
-            BigDecimal amountLost = userBet.getAmount().multiply(userBet.getWinningTeamCoefficient());
-            amountLost = amountLost.setScale(2, RoundingMode.HALF_EVEN);
-            userService.withdrawFromBalance(new WithdrawFromUserBalanceRequest(userBet.getUser().getId(), amountLost));
-        });
+        return new ApplyMatchResultToUserBetsResponse();
     }
 
 }

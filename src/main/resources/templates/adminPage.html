@@ -32,6 +32,15 @@
     <p id="all-bets"></p>
 </div>
 
+<a href="#" onclick="hideOrShowDiv('user-bet-operations')">User bet</a>
+
+<div id="user-bet-operations" style="display: none">
+    <h3>Apply match result to user bets:</h3>
+    <input type="number" id="user-bet-bet-id" placeholder="Bet ID">
+    <input type="text" id="winning-team-name-to-apply" placeholder="Winning team name">
+    <button onclick="sendApplyMatchResultToUserBetsRequest()">Apply result</button>
+</div>
+
 <a href="#" onclick="hideOrShowDiv('user-operations')">User</a>
 
 <div id="user-operations" style="display: none">
@@ -70,7 +79,6 @@
     <h3>Find all teams</h3>
     <button id="find-all-teams-btn" onclick="sendFindAllTeamsRequest()">Find all teams</button>
     <p id="all-teams"></p>
-
 </div>
 
 <script>
@@ -161,6 +169,33 @@
             document.getElementById("all-bets").innerHTML = "";
             findAllBetsBtn.innerText = "Find all bets";
         }
+    }
+
+    function sendApplyMatchResultToUserBetsRequest() {
+        let betId = document.getElementById("user-bet-bet-id").value;
+        let winningTeamName = document.getElementById("winning-team-name-to-apply").value;
+        let url = "/userBet";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("PATCH", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({
+            "betId": betId,
+            "winningTeamName": winningTeamName
+        });
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert("✔ User bets updated!");
+                }
+            }
+        };
     }
 
     function sendAddUserRequest() {

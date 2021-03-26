@@ -17,8 +17,7 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
 
     boolean existsById(Long id);
 
-    @Modifying
-    @Query("FROM Bet b WHERE (SELECT COUNT(b) from Bet b WHERE b.id = :id AND b.teamA.name = :teamName OR b.teamB.name = :teamName) > 0")
-    boolean existsByIdAndTeamName(Long id, String teamName);
+    @Query("SELECT COUNT(b) from Bet b WHERE b.id = :id AND (b.teamA.name = :teamName OR b.teamB.name = :teamName)")
+    Long countByIdAndTeamName(Long id, String teamName);
 
 }

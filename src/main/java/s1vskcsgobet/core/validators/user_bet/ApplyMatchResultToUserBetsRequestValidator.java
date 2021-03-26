@@ -43,7 +43,7 @@ public class ApplyMatchResultToUserBetsRequestValidator {
             return Optional.of(new CoreError("Winning team name", "must not be empty!"));
         } else if (!teamRepository.existsByNameIgnoreCase(request.getWinningTeamName())) {
             return Optional.of(new CoreError("Winning team name", "Team with this property not found."));
-        } else if (!betRepository.existsByIdAndTeamName(request.getBetId(), request.getWinningTeamName())) {
+        } else if (betRepository.countByIdAndTeamName(request.getBetId(), request.getWinningTeamName()) == 0) {
             return Optional.of(new CoreError("Winning team name", "Bet with this property not found."));
         } else {
             return Optional.empty();

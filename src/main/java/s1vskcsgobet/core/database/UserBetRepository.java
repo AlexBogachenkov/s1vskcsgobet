@@ -18,13 +18,13 @@ public interface UserBetRepository extends JpaRepository<UserBet, Long> {
     List<UserBet> findByBetIdAndStatus(Long betId, UserBetStatus status);
 
     @Modifying
-    @Query("UPDATE UserBet ub SET ub.status = :newStatus WHERE ub.bet.id = :betId AND ub.winningTeam.name = :winningTeamName")
-    void updateStatusByBetIdAndWinningTeamName(@Param("betId") Long betId, @Param("winningTeamName") String winningTeamName,
+    @Query("UPDATE UserBet ub SET ub.status = :newStatus WHERE ub.bet.id = :betId AND ub.winningTeam.id = :winningTeamId")
+    void updateStatusByBetIdAndWinningTeamName(@Param("betId") Long betId, @Param("winningTeamId") Long winningTeamId,
                               @Param("newStatus") UserBetStatus newStatus);
 
     @Modifying
-    @Query("UPDATE UserBet ub SET ub.status = :newStatus WHERE ub.bet.id = :betId AND ub.winningTeam.name <> :winningTeamName")
-    void updateStatusByBetIdAndNotWinningTeamName(@Param("betId") Long betId, @Param("winningTeamName") String winningTeamName,
+    @Query("UPDATE UserBet ub SET ub.status = :newStatus WHERE ub.bet.id = :betId AND ub.winningTeam.id <> :winningTeamId")
+    void updateStatusByBetIdAndNotWinningTeamName(@Param("betId") Long betId, @Param("winningTeamId") Long winningTeamId,
                                                @Param("newStatus") UserBetStatus newStatus);
 
 }
