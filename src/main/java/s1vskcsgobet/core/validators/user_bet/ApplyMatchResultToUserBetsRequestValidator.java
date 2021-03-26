@@ -3,7 +3,6 @@ package s1vskcsgobet.core.validators.user_bet;
 import org.springframework.stereotype.Component;
 import s1vskcsgobet.core.database.BetRepository;
 import s1vskcsgobet.core.database.TeamRepository;
-import s1vskcsgobet.core.database.UserBetRepository;
 import s1vskcsgobet.core.requests.user_bet.ApplyMatchResultToUserBetsRequest;
 import s1vskcsgobet.core.responses.CoreError;
 
@@ -15,9 +14,11 @@ import java.util.Optional;
 public class ApplyMatchResultToUserBetsRequestValidator {
 
     private BetRepository betRepository;
+    private TeamRepository teamRepository;
 
-    public ApplyMatchResultToUserBetsRequestValidator(BetRepository betRepository) {
+    public ApplyMatchResultToUserBetsRequestValidator(BetRepository betRepository, TeamRepository teamRepository) {
         this.betRepository = betRepository;
+        this.teamRepository = teamRepository;
     }
 
     public List<CoreError> validate(ApplyMatchResultToUserBetsRequest request) {
@@ -40,6 +41,8 @@ public class ApplyMatchResultToUserBetsRequestValidator {
     private Optional<CoreError> validateWinningTeamName(ApplyMatchResultToUserBetsRequest request) {
         if (request.getWinningTeamName() == null || request.getWinningTeamName().isBlank()) {
             return Optional.of(new CoreError("Winning team name", "must not be empty!"));
+        } else if (!teamRepository.existsByNameIgnoreCase(request.getWinningTeamName())) {
+            return Optional.of(new CoreError("Winning team name", "Team with this property not found."));
         } else if (!betRepository.existsByIdAndTeamName(request.getBetId(), request.getWinningTeamName())) {
             return Optional.of(new CoreError("Winning team name", "Bet with this property not found."));
         } else {
