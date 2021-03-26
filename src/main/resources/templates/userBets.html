@@ -7,9 +7,9 @@
 </head>
 <body>
 
-<h1>Available bets:</h1>
+<h1>User bets:</h1>
 <div th:if="${userBets != null}">
-    <table>
+    <table class="bet-general-table">
         <tr th:each="userBet : ${userBets}">
             <td>
                 <table>

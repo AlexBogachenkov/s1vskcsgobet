@@ -9,7 +9,7 @@
 
 <h1>Available bets:</h1>
 <div th:if="${activeBets != null}">
-    <table>
+    <table class="bet-general-table">
         <tr th:each="bet : ${activeBets}">
             <td>
                 <table>
@@ -21,7 +21,8 @@
                     <tr>
                         <td th:text="${bet.teamA.name + ' VS ' + bet.teamB.name}"></td>
                         <td>
-                            <button th:text="${bet.coefficientTeamA}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
+                            <button class="bet-coefficient-btn"
+                                    th:text="${bet.coefficientTeamA}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
                                     th:team-a-name="${bet.teamA.name}" th:team-b-name="${bet.teamB.name}"
                                     th:winning-team="${bet.teamA.name}" th:winning-team-coefficient="${bet.coefficientTeamA}"
                                     onclick="showMakeBetPopup(this.getAttribute('bet-id'), this.getAttribute('stage'),
@@ -29,7 +30,8 @@
                                     this.getAttribute('winning-team'),this.getAttribute('winning-team-coefficient'))"></button>
                         </td>
                         <td>
-                            <button th:text="${bet.coefficientTeamB}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
+                            <button class="bet-coefficient-btn"
+                                    th:text="${bet.coefficientTeamB}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
                                     th:team-a-name="${bet.teamA.name}" th:team-b-name="${bet.teamB.name}"
                                     th:winning-team="${bet.teamB.name}" th:winning-team-coefficient="${bet.coefficientTeamB}"
                                     onclick="showMakeBetPopup(this.getAttribute('bet-id'), this.getAttribute('stage'),
