@@ -1,15 +1,84 @@
-table {
-    border-collapse: collapse;
-    border: 1px solid black;
+body {
+    background-color: #090F1E;
+    color: white;
 }
 
-.bet-coefficient-btn {
-    width: 100%;
-    height: 100%;
+table {
+    border-collapse: collapse;
 }
 
 .bet-general-table {
     border: none;
+}
+
+.bet-table {
+    width: 450px;
+    margin-bottom: 8px;
+}
+
+/* Radius of table corners */
+.bet-table thead tr:first-child td:first-child {
+    border-top-left-radius: 6px;
+}
+
+.bet-table thead tr:first-child td:last-child {
+    border-top-right-radius: 6px;
+}
+
+.bet-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 6px;
+}
+
+.bet-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 6px;
+}
+
+.bet-table tbody tr td:last-child button {
+    border-bottom-right-radius: 6px;
+}
+
+.bet-table thead {
+    background-image: linear-gradient(to right, #108de7 , #0855c4);
+}
+
+.bet-table tbody {
+    background-color: #edf2ff;
+}
+
+.bet-table-stage {
+    color: #fff;
+    padding: 8px;
+}
+
+.bet-table-coefficient-number {
+    color: #b1d1ff;
+    padding: 8px;
+    text-align: center;
+}
+
+.bet-table-teams {
+    padding: 5px 5px 5px 8px;
+    color: black;
+}
+
+.bet-table-coefficient {
+    text-align: center;
+    padding: 0;
+}
+
+.bet-coefficient-btn {
+    cursor: pointer;
+    width: 100%;
+    height: 48px;
+    border: 0;
+    padding: 0;
+    font-weight: bold;
+    background-color: #dce4f9;
+}
+
+.bet-coefficient-btn:hover {
+    background-color: #202635;
+    color: #fff;
 }
 
 .user-bet-general-table {

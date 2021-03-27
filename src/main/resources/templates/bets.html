@@ -12,33 +12,37 @@
     <table class="bet-general-table">
         <tr th:each="bet : ${activeBets}">
             <td>
-                <table>
-                    <tr>
-                        <td th:text="${bet.stage}"></td>
-                        <td>1</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td th:text="${bet.teamA.name + ' VS ' + bet.teamB.name}"></td>
-                        <td>
-                            <button class="bet-coefficient-btn"
-                                    th:text="${bet.coefficientTeamA}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
-                                    th:team-a-name="${bet.teamA.name}" th:team-b-name="${bet.teamB.name}"
-                                    th:winning-team="${bet.teamA.name}" th:winning-team-coefficient="${bet.coefficientTeamA}"
-                                    onclick="showMakeBetPopup(this.getAttribute('bet-id'), this.getAttribute('stage'),
-                                    this.getAttribute('team-a-name'), this.getAttribute('team-b-name'),
-                                    this.getAttribute('winning-team'),this.getAttribute('winning-team-coefficient'))"></button>
-                        </td>
-                        <td>
-                            <button class="bet-coefficient-btn"
-                                    th:text="${bet.coefficientTeamB}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
-                                    th:team-a-name="${bet.teamA.name}" th:team-b-name="${bet.teamB.name}"
-                                    th:winning-team="${bet.teamB.name}" th:winning-team-coefficient="${bet.coefficientTeamB}"
-                                    onclick="showMakeBetPopup(this.getAttribute('bet-id'), this.getAttribute('stage'),
-                                    this.getAttribute('team-a-name'), this.getAttribute('team-b-name'),
-                                    this.getAttribute('winning-team'),this.getAttribute('winning-team-coefficient'))"></button>
-                        </td>
-                    </tr>
+                <table class="bet-table">
+                    <thead>
+                        <tr>
+                            <td class="bet-table-stage" th:text="${bet.stage}"></td>
+                            <td class="bet-table-coefficient-number">1</td>
+                            <td class="bet-table-coefficient-number">2</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bet-table-teams" th:utext="${bet.teamA.name} + ' <br /> ' + ${bet.teamB.name}"></td>
+                            <td class="bet-table-coefficient">
+                                <button class="bet-coefficient-btn"
+                                        th:text="${bet.coefficientTeamA}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
+                                        th:team-a-name="${bet.teamA.name}" th:team-b-name="${bet.teamB.name}"
+                                        th:winning-team="${bet.teamA.name}" th:winning-team-coefficient="${bet.coefficientTeamA}"
+                                        onclick="showMakeBetPopup(this.getAttribute('bet-id'), this.getAttribute('stage'),
+                                        this.getAttribute('team-a-name'), this.getAttribute('team-b-name'),
+                                        this.getAttribute('winning-team'),this.getAttribute('winning-team-coefficient'))"></button>
+                            </td>
+                            <td>
+                                <button class="bet-coefficient-btn"
+                                        th:text="${bet.coefficientTeamB}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
+                                        th:team-a-name="${bet.teamA.name}" th:team-b-name="${bet.teamB.name}"
+                                        th:winning-team="${bet.teamB.name}" th:winning-team-coefficient="${bet.coefficientTeamB}"
+                                        onclick="showMakeBetPopup(this.getAttribute('bet-id'), this.getAttribute('stage'),
+                                        this.getAttribute('team-a-name'), this.getAttribute('team-b-name'),
+                                        this.getAttribute('winning-team'),this.getAttribute('winning-team-coefficient'))"></button>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </td>
         </tr>
