@@ -32,7 +32,7 @@
                                         this.getAttribute('team-a-name'), this.getAttribute('team-b-name'),
                                         this.getAttribute('winning-team'),this.getAttribute('winning-team-coefficient'))"></button>
                             </td>
-                            <td>
+                            <td class="bet-table-coefficient">
                                 <button class="bet-coefficient-btn"
                                         th:text="${bet.coefficientTeamB}" th:bet-id="${bet.id}" th:stage="${bet.stage}"
                                         th:team-a-name="${bet.teamA.name}" th:team-b-name="${bet.teamB.name}"
