@@ -9,28 +9,26 @@
 
 <h1>User bets:</h1>
 <div th:if="${userBets != null}">
-    <table class="bet-general-table">
+    <table class="user-bet-general-table">
         <tr th:each="userBet : ${userBets}">
             <td>
-                <table>
-                    <tr>
-                        <td th:text="${userBet.bet.stage}"></td>
-                    </tr>
-                    <tr>
-                        <td th:text="${userBet.bet.teamA.name + ' VS ' + userBet.bet.teamB.name}"></td>
-                    </tr>
-                    <tr>
-                        <td th:text="${userBet.winningTeam.name}"></td>
-                    </tr>
-                    <tr>
-                        <td th:text="${userBet.winningTeamCoefficient}"></td>
-                    </tr>
-                    <tr>
-                        <td th:text="${userBet.amount}"></td>
-                    </tr>
-                    <tr>
-                        <td th:text="${userBet.status}"></td>
-                    </tr>
+                <table class="user-bet-table">
+                    <thead>
+                        <tr class="user-bet-first-row">
+                            <td class="user-bet-stage" th:text="${userBet.bet.stage}"></td>
+                            <td class="user-bet-team-names" th:utext="${userBet.bet.teamA.name} + ' <br /> ' + ${userBet.bet.teamB.name}"></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="user-bet-second-row">
+                            <td class="user-bet-winning-team-name" th:text="${userBet.winningTeam.name}"></td>
+                            <td class="user-bet-coefficient" th:text="${userBet.winningTeamCoefficient}"></td>
+                        </tr>
+                        <tr class="user-bet-third-row">
+                            <td class="user-bet-amount" th:text="${userBet.amount}"></td>
+                            <td class="user-bet-status" th:text="${userBet.status}"></td>
+                        </tr>
+                    </tbody>
                 </table>
             </td>
         </tr>
@@ -44,5 +42,19 @@
     </table>
 </div>
 
+<script>
+    window.onload = function () {
+        let userBetStatuses = document.getElementsByClassName("user-bet-status");
+        for (let i = 0; i < userBetStatuses.length; i++) {
+            if (userBetStatuses[i].innerHTML === "PENDING") {
+                userBetStatuses[i].classList.add("pending");
+            } else if (userBetStatuses[i].innerHTML === "WON") {
+                userBetStatuses[i].classList.add("won");
+            } else if (userBetStatuses[i].innerHTML === "LOST") {
+                userBetStatuses[i].classList.add("lost");
+            }
+        }
+    }
+</script>
 </body>
 </html>

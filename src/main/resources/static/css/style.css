@@ -7,6 +7,7 @@ table {
     border-collapse: collapse;
 }
 
+/* Bet styles */
 .bet-general-table {
     border: none;
 }
@@ -83,10 +84,84 @@ table {
     color: #fff;
 }
 
+/* User bet styles */
 .user-bet-general-table {
     border: none;
 }
 
+.user-bet-table {
+    width: 430px;
+    margin-bottom: 8px;
+}
+
+/* Radius of table corners */
+.user-bet-table thead tr:first-child td:first-child {
+    border-top-left-radius: 6px;
+}
+
+.user-bet-table thead tr:first-child td:last-child {
+    border-top-right-radius: 6px;
+}
+
+.user-bet-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 6px;
+}
+
+.user-bet-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 6px;
+}
+
+.user-bet-first-row {
+    background-image: linear-gradient(to left, #233358, #141b2e);
+}
+
+.user-bet-second-row {
+    background-image: linear-gradient(to left, #586fa7, #272f40);
+}
+
+.user-bet-third-row {
+    background-image: linear-gradient(to left, #8facf1, #445270);
+}
+
+.user-bet-stage {
+    padding: 14px;
+}
+
+.user-bet-team-names {
+    width: 160px;
+    padding: 5px 14px;
+}
+
+.user-bet-winning-team-name {
+    padding: 10px 14px;
+}
+
+.user-bet-coefficient {
+    padding: 10px 14px;
+}
+
+.user-bet-amount {
+    padding: 6px 14px;
+}
+
+.user-bet-status {
+    color: white;
+    padding: 6px 14px;
+}
+
+.user-bet-status.pending {
+    background-image: linear-gradient(to left, #414141, #1d1d1d);
+}
+
+.user-bet-status.won {
+    background-image: linear-gradient(to left, #0f9b0f, #052c16);
+}
+
+.user-bet-status.lost {
+    background-image: linear-gradient(to left, #dd1818, #410e0e);
+}
+
+/* Popup styles */
 .popup {
     display: none;
     position: fixed;
