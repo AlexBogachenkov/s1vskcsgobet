@@ -23,6 +23,15 @@
     </select>
     <button onclick="sendAddBetRequest()">Add bet</button>
 
+    <h3>Update bet isActive status</h3>
+    <input type="number" id="bet-to-update-id" placeholder="Bet ID">
+    <label for="bet-to-update-is-active">New status:</label>
+    <select name="status" id="bet-to-update-is-active">
+        <option value="true">true</option>
+        <option value="false">false</option>
+    </select>
+    <button onclick="sendUpdateBetIsActiveStatusRequest()">Update bet status</button>
+
     <h3>Delete bet</h3>
     <input type="number" id="bet-to-delete-id" placeholder="Bet ID">
     <button onclick="sendDeleteBetRequest()">Delete bet</button>
@@ -142,6 +151,33 @@
                     alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
                 } else {
                     alert("✔ Bet deleted!");
+                }
+            }
+        };
+    }
+
+    function sendUpdateBetIsActiveStatusRequest() {
+        let betId = document.getElementById("bet-to-update-id").value;
+        let newStatus = document.getElementById("bet-to-update-is-active").value;
+        let url = "/bet";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("PATCH", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({
+            "betId": betId,
+            "newIsActiveStatus": newStatus
+        });
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert("✔ Bet isActive status updated!");
                 }
             }
         };

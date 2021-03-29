@@ -7,12 +7,15 @@ import s1vskcsgobet.core.database.TeamRepository;
 import s1vskcsgobet.core.domain.Bet;
 import s1vskcsgobet.core.domain.Team;
 import s1vskcsgobet.core.requests.bet.AddBetRequest;
+import s1vskcsgobet.core.requests.bet.ChangeBetIsActiveStatusRequest;
 import s1vskcsgobet.core.requests.bet.DeleteBetByIdRequest;
 import s1vskcsgobet.core.responses.CoreError;
 import s1vskcsgobet.core.responses.bet.AddBetResponse;
+import s1vskcsgobet.core.responses.bet.ChangeBetIsActiveStatusResponse;
 import s1vskcsgobet.core.responses.bet.DeleteBetByIdResponse;
 import s1vskcsgobet.core.responses.bet.FindAllBetsResponse;
 import s1vskcsgobet.core.validators.bet.AddBetRequestValidator;
+import s1vskcsgobet.core.validators.bet.ChangeBetIsActiveStatusRequestValidator;
 import s1vskcsgobet.core.validators.bet.DeleteBetByIdRequestValidator;
 
 import java.util.List;
@@ -24,13 +27,16 @@ public class BetService {
     private final TeamRepository teamRepository;
     private final AddBetRequestValidator addBetRequestValidator;
     private final DeleteBetByIdRequestValidator deleteBetByIdRequestValidator;
+    private final ChangeBetIsActiveStatusRequestValidator changeBetIsActiveStatusRequestValidator;
 
     public BetService(BetRepository betRepository, TeamRepository teamRepository,
-                      AddBetRequestValidator addBetRequestValidator, DeleteBetByIdRequestValidator deleteBetByIdRequestValidator) {
+                      AddBetRequestValidator addBetRequestValidator, DeleteBetByIdRequestValidator deleteBetByIdRequestValidator,
+                      ChangeBetIsActiveStatusRequestValidator changeBetIsActiveStatusRequestValidator) {
         this.betRepository = betRepository;
         this.teamRepository = teamRepository;
         this.addBetRequestValidator = addBetRequestValidator;
         this.deleteBetByIdRequestValidator = deleteBetByIdRequestValidator;
+        this.changeBetIsActiveStatusRequestValidator = changeBetIsActiveStatusRequestValidator;
     }
 
     @Transactional
@@ -60,6 +66,16 @@ public class BetService {
     public FindAllBetsResponse findActive() {
         List<Bet> activeBets = betRepository.findByIsActiveOrderByIdDesc(true);
         return new FindAllBetsResponse(activeBets);
+    }
+
+    @Transactional
+    public ChangeBetIsActiveStatusResponse changeIsActiveStatus(ChangeBetIsActiveStatusRequest request) {
+        List<CoreError> errors = changeBetIsActiveStatusRequestValidator.validate(request);
+        if (!errors.isEmpty()) {
+            return new ChangeBetIsActiveStatusResponse(errors);
+        }
+        boolean changed = betRepository.changeIsActiveStatus(request.getBetId(), request.isNewIsActiveStatus()) > 0;
+        return new ChangeBetIsActiveStatusResponse(changed);
     }
 
     public FindAllBetsResponse findAll() {

@@ -20,4 +20,8 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
     @Query("SELECT COUNT(b) from Bet b WHERE b.id = :id AND (b.teamA.name = :teamName OR b.teamB.name = :teamName)")
     Long countByIdAndTeamName(Long id, String teamName);
 
+    @Modifying
+    @Query("UPDATE Bet b SET b.isActive = :isActive WHERE b.id = :id")
+    int changeIsActiveStatus(Long id, boolean isActive);
+
 }
