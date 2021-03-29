@@ -23,9 +23,14 @@
     </select>
     <button onclick="sendAddBetRequest()">Add bet</button>
 
-    <h3>Delete bet</h3>
-    <input type="number" id="bet-to-delete-id" placeholder="Bet ID">
-    <button onclick="sendDeleteBetRequest()">Delete bet</button>
+    <h3>Update bet isActive status</h3>
+    <input type="number" id="bet-to-update-id" placeholder="Bet ID">
+    <label for="bet-to-update-is-active">New status:</label>
+    <select name="status" id="bet-to-update-is-active">
+        <option value="true">true</option>
+        <option value="false">false</option>
+    </select>
+    <button onclick="sendUpdateBetIsActiveStatusRequest()">Update bet status</button>
 
     <h3>Find all bets</h3>
     <button id="find-all-bets-btn" onclick="sendFindAllBetsRequest()">Find all bets</button>
@@ -55,10 +60,6 @@
     <h3>Add team</h3>
     <input type="text" id="team-to-add-name" placeholder="Team name">
     <button onclick="sendAddTeamRequest()">Add team</button>
-
-    <h3>Delete team</h3>
-    <input type="text" id="team-to-delete-name" placeholder="Team name">
-    <button onclick="sendDeleteTeamRequest()">Delete team</button>
 
     <h3>Find all teams</h3>
     <button id="find-all-teams-btn" onclick="sendFindAllTeamsRequest()">Find all teams</button>
@@ -111,13 +112,20 @@
         };
     }
 
-    function sendDeleteBetRequest() {
-        let betId = document.getElementById("bet-to-delete-id").value;
-        let url = "/bet/" + betId;
+    function sendUpdateBetIsActiveStatusRequest() {
+        let betId = document.getElementById("bet-to-update-id").value;
+        let newStatus = document.getElementById("bet-to-update-is-active").value;
+        let url = "/bet";
 
         let xhr = new XMLHttpRequest();
-        xhr.open("DELETE", url, true);
-        xhr.send();
+        xhr.open("PATCH", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({
+            "betId": betId,
+            "newIsActiveStatus": newStatus
+        });
+        xhr.send(request);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -125,7 +133,7 @@
                 if (responseObject.errors != null) {
                     alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
                 } else {
-                    alert("✔ Bet deleted!");
+                    alert("✔ Bet isActive status updated!");
                 }
             }
         };
