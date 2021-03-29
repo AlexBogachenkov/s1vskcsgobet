@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Moderator page</title>
+</head>
+<body>
+<h1>Moderator page</h1>
+
+<a href="#" onclick="hideOrShowDiv('bet-operations')">Bet</a>
+
+<div id="bet-operations" style="display: none">
+    <h3>Add bet</h3>
+    <input type="text" id="bet-to-add-team-a-name" placeholder="Team A name">
+    <input type="text" id="bet-to-add-team-b-name" placeholder="Team B name">
+    <input type="number" id="bet-to-add-team-a-coefficient" step=".01" placeholder="Team A coefficient">
+    <input type="number" id="bet-to-add-team-b-coefficient" step=".01" placeholder="Team B coefficient">
+    <input type="text" id="bet-to-add-stage" placeholder="Stage">
+    <label for="bet-to-add-is-active">Is active:</label>
+    <select name="status" id="bet-to-add-is-active">
+        <option value="true">true</option>
+        <option value="false">false</option>
+    </select>
+    <button onclick="sendAddBetRequest()">Add bet</button>
+
+    <h3>Delete bet</h3>
+    <input type="number" id="bet-to-delete-id" placeholder="Bet ID">
+    <button onclick="sendDeleteBetRequest()">Delete bet</button>
+
+    <h3>Find all bets</h3>
+    <button id="find-all-bets-btn" onclick="sendFindAllBetsRequest()">Find all bets</button>
+    <p id="all-bets"></p>
+</div>
+
+<a href="#" onclick="hideOrShowDiv('user-bet-operations')">User bet</a>
+
+<div id="user-bet-operations" style="display: none">
+    <h3>Apply match result to user bets:</h3>
+    <input type="number" id="user-bet-bet-id" placeholder="Bet ID">
+    <input type="text" id="winning-team-name-to-apply" placeholder="Winning team name">
+    <button onclick="sendApplyMatchResultToUserBetsRequest()">Apply result</button>
+</div>
+
+<a href="#" onclick="hideOrShowDiv('user-operations')">User</a>
+
+<div id="user-operations" style="display: none">
+    <h3>Find all users</h3>
+    <button id="find-all-users-btn" onclick="sendFindAllUsersRequest()">Find all users</button>
+    <p id="all-users"></p>
+</div>
+
+<a href="#" onclick="hideOrShowDiv('team-operations')">Team</a>
+
+<div id="team-operations" style="display: none">
+    <h3>Add team</h3>
+    <input type="text" id="team-to-add-name" placeholder="Team name">
+    <button onclick="sendAddTeamRequest()">Add team</button>
+
+    <h3>Delete team</h3>
+    <input type="text" id="team-to-delete-name" placeholder="Team name">
+    <button onclick="sendDeleteTeamRequest()">Delete team</button>
+
+    <h3>Find all teams</h3>
+    <button id="find-all-teams-btn" onclick="sendFindAllTeamsRequest()">Find all teams</button>
+    <p id="all-teams"></p>
+</div>
+
+<script>
+
+    function hideOrShowDiv(divId) {
+        let element = document.getElementById(divId);
+        if (element.style.display === "none") {
+            element.style.display = "block";
+        } else {
+            element.style.display = "none";
+        }
+    }
+
+    function sendAddBetRequest() {
+        let teamAName = document.getElementById("bet-to-add-team-a-name").value;
+        let teamBName = document.getElementById("bet-to-add-team-b-name").value;
+        let teamACoefficient = document.getElementById("bet-to-add-team-a-coefficient").value;
+        let teamBCoefficient = document.getElementById("bet-to-add-team-b-coefficient").value;
+        let stage = document.getElementById("bet-to-add-stage").value;
+        let isActive = document.getElementById("bet-to-add-is-active").value;
+        let url = "/bet";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({
+            "teamAName": teamAName,
+            "teamBName": teamBName,
+            "coefficientTeamA": teamACoefficient,
+            "coefficientTeamB": teamBCoefficient,
+            "stage": stage,
+            "active": isActive
+        });
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert("✔ Bet added with ID: " + responseObject.addedBet.id + ".");
+                }
+            }
+        };
+    }
+
+    function sendDeleteBetRequest() {
+        let betId = document.getElementById("bet-to-delete-id").value;
+        let url = "/bet/" + betId;
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("DELETE", url, true);
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert("✔ Bet deleted!");
+                }
+            }
+        };
+    }
+
+    function sendFindAllBetsRequest() {
+        let findAllBetsBtn = document.getElementById("find-all-bets-btn");
+        let url = "/bet";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+
+        if (findAllBetsBtn.innerText === "Find all bets") {
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let responseObject = JSON.parse(this.responseText);
+                    for (let i = 0; i < responseObject.allBets.length; i++) {
+                        document.getElementById("all-bets").innerHTML += "ID: " + responseObject.allBets[i].id + ", team A name: '" + responseObject.allBets[i].teamA.name + "', team A coefficient: " + responseObject.allBets[i].coefficientTeamA + ", team B name: '" + responseObject.allBets[i].teamB.name + "', team B coefficient: " + responseObject.allBets[i].coefficientTeamB + ", stage: " + responseObject.allBets[i].stage + ", is active: " + responseObject.allBets[i].active + ".<br>";
+                    }
+                }
+            };
+            findAllBetsBtn.innerText = "Hide all bets";
+        } else if (findAllBetsBtn.innerText === "Hide all bets") {
+            document.getElementById("all-bets").innerHTML = "";
+            findAllBetsBtn.innerText = "Find all bets";
+        }
+    }
+
+    function sendApplyMatchResultToUserBetsRequest() {
+        let betId = document.getElementById("user-bet-bet-id").value;
+        let winningTeamName = document.getElementById("winning-team-name-to-apply").value;
+        let url = "/userBet";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("PATCH", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({
+            "betId": betId,
+            "winningTeamName": winningTeamName
+        });
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert("✔ User bets updated!");
+                }
+            }
+        };
+    }
+
+    function sendFindAllUsersRequest() {
+        let url = "/user";
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+
+        let findAllTeamsBtn = document.getElementById("find-all-users-btn");
+
+        if (findAllTeamsBtn.innerText === "Find all users") {
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let responseObject = JSON.parse(this.responseText);
+                    for (let i = 0; i < responseObject.allUsers.length; i++) {
+                        document.getElementById("all-users").innerHTML += "ID: " + responseObject.allUsers[i].id + ", nickname: '" + responseObject.allUsers[i].nickname + "', balance: " + responseObject.allUsers[i].balance + ", role: '" + responseObject.allUsers[i].role + "'.<br>";
+                    }
+                }
+            };
+            findAllTeamsBtn.innerText = "Hide all users";
+        } else if (findAllTeamsBtn.innerText === "Hide all users") {
+            document.getElementById("all-users").innerHTML = "";
+            findAllTeamsBtn.innerText = "Find all users";
+        }
+    }
+
+    function sendAddTeamRequest() {
+        let teamName = document.getElementById("team-to-add-name").value;
+        let url = "/team";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        let request = JSON.stringify({"teamName": teamName});
+        xhr.send(request);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    alert('✔ Team added: "' + responseObject.addedTeam.name + '"');
+                }
+            }
+        };
+    }
+
+    function sendDeleteTeamRequest() {
+        let teamName = document.getElementById("team-to-delete-name").value;
+        let url = "/team/" + teamName;
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("DELETE", url, true);
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseObject = JSON.parse(this.responseText);
+                if (responseObject.errors != null) {
+                    alert("❌ Error: " + responseObject.errors[0].field + " " + responseObject.errors[0].message);
+                } else {
+                    if (responseObject.deleted === true) {
+                        alert("✔ Team deleted!");
+                    } else {
+                        alert("❌ Team isn't deleted!");
+                    }
+
+                }
+            }
+        };
+    }
+
+    function sendFindAllTeamsRequest() {
+        let url = "/team";
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+
+        let findAllTeamsBtn = document.getElementById("find-all-teams-btn");
+
+        if (findAllTeamsBtn.innerText === "Find all teams") {
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let responseObject = JSON.parse(this.responseText);
+                    for (let i = 0; i < responseObject.allTeams.length; i++) {
+                        document.getElementById("all-teams").innerHTML += "ID: " + responseObject.allTeams[i].id + ", name: " + responseObject.allTeams[i].name + ".<br>";
+                    }
+                }
+            };
+            findAllTeamsBtn.innerText = "Hide all teams";
+        } else if (findAllTeamsBtn.innerText === 'Hide all teams') {
+            document.getElementById("all-teams").innerHTML = "";
+            findAllTeamsBtn.innerText = "Find all teams";
+        }
+    }
+</script>
+</body>
+</html>
