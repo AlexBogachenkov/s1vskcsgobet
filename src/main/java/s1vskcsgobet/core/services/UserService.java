@@ -21,19 +21,16 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder encoder;
     private final AddUserRequestValidator addUserRequestValidator;
     private final SignupUserRequestValidator signupUserRequestValidator;
     private final LoginUserRequestValidator loginUserRequestValidator;
     private final DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder,
-                       AddUserRequestValidator addUserRequestValidator,
+    public UserService(UserRepository userRepository, AddUserRequestValidator addUserRequestValidator,
                        SignupUserRequestValidator signupUserRequestValidator,
                        LoginUserRequestValidator loginUserRequestValidator,
                        DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator) {
         this.userRepository = userRepository;
-        this.encoder = encoder;
         this.addUserRequestValidator = addUserRequestValidator;
         this.signupUserRequestValidator = signupUserRequestValidator;
         this.loginUserRequestValidator = loginUserRequestValidator;
@@ -57,7 +54,7 @@ public class UserService {
         }
         User user = new User();
         user.setNickname(request.getNickname());
-        user.setPassword(encoder.encode(request.getPassword()));
+        user.setPassword(request.getPassword());
         user.setBalance(new BigDecimal("1000.00"));
         user.setRole(Role.USER);
         userRepository.save(user);
