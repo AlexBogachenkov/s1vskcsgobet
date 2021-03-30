@@ -19,7 +19,8 @@ public class SignupPageController {
     }
 
     @GetMapping(value = "/signup")
-    public String showSignupPage() {
+    public String showSignupPage(ModelMap modelMap) {
+        modelMap.addAttribute("request", new SignupUserRequest());
         return "signup";
     }
 
