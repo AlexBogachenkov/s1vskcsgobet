@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Sign up</title>
 </head>
 <body>
 <h1>Sign up</h1>
+<div th:if="${errors != null}">
+    <table>
+        <tr th:each="error : ${errors}">
+            <td th:text="${error.field} + ' ' + ${error.message}"></td>
+        </tr>
+    </table>
+</div>
+<form action="/signup" th:object="${request}" method="post">
+    <input type="text" th:field="${request.nickname}" placeholder="Nickname"/>
+    <input type="text" th:field="${request.password}" placeholder="Password"/>
+    <input type="text" th:field="${request.passwordAgain}" placeholder="Password again"/>
+    <input type="submit" value="Sign up"/>
+</form>
 </body>
 </html>
