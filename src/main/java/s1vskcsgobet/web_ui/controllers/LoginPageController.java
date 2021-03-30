@@ -19,7 +19,8 @@ public class LoginPageController {
     }
 
     @GetMapping(value = "/login")
-    public String showLoginPage() {
+    public String showLoginPage(ModelMap modelMap) {
+        modelMap.addAttribute("request", new LoginUserRequest());
         return "login";
     }
 
