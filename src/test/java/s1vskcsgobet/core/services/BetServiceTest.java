@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,14 +41,32 @@ class BetServiceTest {
     @InjectMocks
     private BetService betService;
 
+    private List<CoreError> errors;
+    private List<Bet> bets;
+    private AddBetRequest addBetRequest;
+    private Team teamA, teamB, teamC, teamD;
+    private Bet betA, betB;
+
+    @BeforeEach
+    public void setup() {
+        errors = new ArrayList<>();
+        bets = new ArrayList<>();
+        addBetRequest = new AddBetRequest("teamAName", "teamBName",
+                new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true);
+        teamA = new Team("teamA");
+        teamB = new Team("teamB");
+        teamC = new Team("teamC");
+        teamD = new Team("teamD");
+        betA = new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true);
+        betB = new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), "Final", true);
+    }
+
     @Test
     public void shouldReturnErrorList_whenAddBetRequestValidationNotPassed() {
-        AddBetRequest request = new AddBetRequest("", "teamBName",
-                new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true);
-        List<CoreError> errors = new ArrayList<>();
+        addBetRequest.setTeamAName("");
         errors.add(new CoreError("Team A name", "must not be empty!"));
-        Mockito.when(addBetRequestValidator.validate(request)).thenReturn(errors);
-        AddBetResponse response = betService.add(request);
+        Mockito.when(addBetRequestValidator.validate(addBetRequest)).thenReturn(errors);
+        AddBetResponse response = betService.add(addBetRequest);
 
         assertTrue(response.hasErrors());
         assertEquals(1, response.getErrors().size());
@@ -57,17 +76,13 @@ class BetServiceTest {
 
     @Test
     public void shouldReturnAddedBet() {
-        AddBetRequest request = new AddBetRequest("teamA", "teamB",
-                new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true);
-        Mockito.when(addBetRequestValidator.validate(request)).thenReturn(new ArrayList<>());
-        Team teamA = new Team("teamA");
-        Team teamB = new Team("teamB");
-        Mockito.when(teamRepository.findByNameIgnoreCase("teamA")).thenReturn(Optional.of(teamA));
-        Mockito.when(teamRepository.findByNameIgnoreCase("teamB")).thenReturn(Optional.of(teamB));
-        Bet bet = new Bet(teamA, teamB, request.getCoefficientTeamA(), request.getCoefficientTeamB(),
-                request.getStage(), request.isActive());
+        Mockito.when(addBetRequestValidator.validate(addBetRequest)).thenReturn(new ArrayList<>());
+        Mockito.when(teamRepository.findByNameIgnoreCase("teamAName")).thenReturn(Optional.of(teamA));
+        Mockito.when(teamRepository.findByNameIgnoreCase("teamBName")).thenReturn(Optional.of(teamB));
+        Bet bet = new Bet(teamA, teamB, addBetRequest.getCoefficientTeamA(), addBetRequest.getCoefficientTeamB(),
+                addBetRequest.getStage(), addBetRequest.isActive());
         Mockito.when(betRepository.save(bet)).thenReturn(bet);
-        AddBetResponse response = betService.add(request);
+        AddBetResponse response = betService.add(addBetRequest);
 
         assertFalse(response.hasErrors());
         assertNotNull(response.getAddedBet());
@@ -76,7 +91,6 @@ class BetServiceTest {
     @Test
     public void shouldReturnErrorList_whenDeleteBetByIdRequestValidationNotPassed() {
         DeleteBetByIdRequest request = new DeleteBetByIdRequest(null);
-        List<CoreError> errors = new ArrayList<>();
         errors.add(new CoreError("Team ID", "must not be empty!"));
         Mockito.when(deleteBetByIdRequestValidator.validate(request)).thenReturn(errors);
         DeleteBetByIdResponse response = betService.deleteById(request);
@@ -99,13 +113,8 @@ class BetServiceTest {
 
     @Test
     public void shouldReturnActiveBets() {
-        List<Bet> bets = new ArrayList<>();
-        Team teamA = new Team("teamA");
-        Team teamB = new Team("teamB");
-        Team teamC = new Team("teamC");
-        Team teamD = new Team("teamD");
-        bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true));
-        bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), "Final", true));
+        bets.add(betA);
+        bets.add(betB);
         Mockito.when(betRepository.findByIsActiveOrderByIdDesc(true)).thenReturn(bets);
         FindAllBetsResponse response = betService.findActive();
 
@@ -117,13 +126,9 @@ class BetServiceTest {
 
     @Test
     public void shouldReturnAllBets() {
-        List<Bet> bets = new ArrayList<>();
-        Team teamA = new Team("teamA");
-        Team teamB = new Team("teamB");
-        Team teamC = new Team("teamC");
-        Team teamD = new Team("teamD");
-        bets.add(new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.45"), "Final", true));
-        bets.add(new Bet(teamC, teamD, new BigDecimal("2.32"), new BigDecimal("1.45"), "Final", false));
+        bets.add(betA);
+        betB.setActive(false);
+        bets.add(betB);
         Mockito.when(betRepository.findAllByOrderByIdDesc()).thenReturn(bets);
         FindAllBetsResponse response = betService.findAll();
 
