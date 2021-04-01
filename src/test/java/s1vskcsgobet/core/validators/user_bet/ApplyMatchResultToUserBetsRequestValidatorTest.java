@@ -93,7 +93,7 @@ class ApplyMatchResultToUserBetsRequestValidatorTest {
         ApplyMatchResultToUserBetsRequest request = new ApplyMatchResultToUserBetsRequest(2L, "teamName");
         Mockito.when(betRepository.existsById(2L)).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("teamName")).thenReturn(true);
-        Mockito.when(betRepository.countByIdAndTeamName(2L, "teamName")).thenReturn(1L);
+        Mockito.when(betRepository.countByIdAndTeamName(2L, "teamName")).thenReturn(0L);
         List<CoreError> errors = validator.validate(request);
 
         assertNotNull(errors);
