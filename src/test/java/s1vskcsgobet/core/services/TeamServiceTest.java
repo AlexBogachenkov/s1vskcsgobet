@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,10 +35,20 @@ class TeamServiceTest {
     @InjectMocks
     private TeamService teamService;
 
+    private List<CoreError> errors;
+    private Team teamA;
+    private Team teamB;
+
+    @BeforeEach
+    public void setup() {
+        errors = new ArrayList<>();
+        teamA = new Team("teamA");
+        teamB = new Team("teamB");
+    }
+
     @Test
     public void shouldReturnErrorList_whenAddTeamRequestValidationNotPassed() {
         AddTeamRequest request = new AddTeamRequest("");
-        List<CoreError> errors = new ArrayList<>();
         errors.add(new CoreError("Team name", "must not be empty!"));
         Mockito.when(addTeamRequestValidator.validate(request)).thenReturn(errors);
         AddTeamResponse response = teamService.add(request);
@@ -50,21 +61,19 @@ class TeamServiceTest {
 
     @Test
     public void shouldReturnAddedTeam() {
-        Team team = new Team("teamName");
-        AddTeamRequest request = new AddTeamRequest(team.getName());
+        AddTeamRequest request = new AddTeamRequest(teamA.getName());
         Mockito.when(addTeamRequestValidator.validate(request)).thenReturn(new ArrayList<>());
-        Mockito.when(teamRepository.save(team)).thenReturn(team);
+        Mockito.when(teamRepository.save(teamA)).thenReturn(teamA);
         AddTeamResponse response = teamService.add(request);
 
         assertFalse(response.hasErrors());
         assertNotNull(response.getAddedTeam());
-        assertEquals("teamName", response.getAddedTeam().getName());
+        assertEquals("teamA", response.getAddedTeam().getName());
     }
 
     @Test
     public void shouldReturnErrorList_whenDeleteTeamByNameRequestValidationNotPassed() {
         DeleteTeamByNameRequest request = new DeleteTeamByNameRequest("");
-        List<CoreError> errors = new ArrayList<>();
         errors.add(new CoreError("Team name", "must not be empty!"));
         Mockito.when(deleteTeamByNameRequestValidator.validate(request)).thenReturn(errors);
         DeleteTeamByNameResponse response = teamService.deleteByName(request);
@@ -77,10 +86,9 @@ class TeamServiceTest {
 
     @Test
     public void shouldReturnIsDeleted() {
-        Team team = new Team("teamName");
-        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest(team.getName());
+        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest(teamA.getName());
         Mockito.when(deleteTeamByNameRequestValidator.validate(request)).thenReturn(new ArrayList<>());
-        Mockito.when(teamRepository.deleteByNameIgnoreCase(team.getName())).thenReturn(1);
+        Mockito.when(teamRepository.deleteByNameIgnoreCase(teamA.getName())).thenReturn(1);
         DeleteTeamByNameResponse response = teamService.deleteByName(request);
 
         assertFalse(response.hasErrors());
@@ -89,8 +97,6 @@ class TeamServiceTest {
 
     @Test
     public void shouldReturnAllTeams() {
-        Team teamA = new Team("teamA");
-        Team teamB = new Team("teamB");
         List<Team> allTeams = List.of(teamA, teamB);
         Mockito.when(teamRepository.findAll()).thenReturn(allTeams);
         FindAllTeamsResponse response = teamService.findAll();
