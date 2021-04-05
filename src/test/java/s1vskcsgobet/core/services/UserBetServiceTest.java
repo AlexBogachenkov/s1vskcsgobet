@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,14 +47,21 @@ class UserBetServiceTest {
     @InjectMocks
     private UserBetService userBetService;
 
+    private List<CoreError> errors;
+    private AddUserBetRequest addUserBetRequest;
+
+    @BeforeEach
+    public void setup() {
+        errors = new ArrayList<>();
+        addUserBetRequest = new AddUserBetRequest(1L, 2L, "teamName",
+                new BigDecimal("1.23"), new BigDecimal("20"));
+    }
+
     @Test
     public void shouldReturnErrorList_whenAddUserBetRequestValidationNotPassed() {
-        AddUserBetRequest request = new AddUserBetRequest(null, 2L, "teamName",
-                new BigDecimal("1.23"), new BigDecimal("20"));
-        List<CoreError> errors = new ArrayList<>();
         errors.add(new CoreError("User ID", "must not be empty!"));
-        Mockito.when(addUserBetRequestValidator.validate(request)).thenReturn(errors);
-        AddUserBetResponse response = userBetService.add(request);
+        Mockito.when(addUserBetRequestValidator.validate(addUserBetRequest)).thenReturn(errors);
+        AddUserBetResponse response = userBetService.add(addUserBetRequest);
 
         assertNotNull(response.getErrors());
         assertEquals(1, response.getErrors().size());
@@ -63,20 +71,18 @@ class UserBetServiceTest {
 
     @Test
     public void shouldReturnAddedUserBet() {
-        AddUserBetRequest request = new AddUserBetRequest(1L, 2L, "teamName",
-                new BigDecimal("1.23"), new BigDecimal("20"));
-        Mockito.when(addUserBetRequestValidator.validate(request)).thenReturn(new ArrayList<>());
+        Mockito.when(addUserBetRequestValidator.validate(addUserBetRequest)).thenReturn(new ArrayList<>());
         User user = new User("nickname", "password", new BigDecimal("200"), Role.USER);
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
         Bet bet = new Bet(teamA, teamB, new BigDecimal("1.23"), new BigDecimal("2.34"), "Final", true);
         Team winningTeam = new Team("teamName");
-        UserBet userBet = new UserBet(user, bet, winningTeam, request.getWinningTeamCoefficient(), request.getAmount(), UserBetStatus.PENDING);
-        Mockito.when(userRepository.findById(request.getUserId())).thenReturn(Optional.of(user));
-        Mockito.when(betRepository.findById(request.getBetId())).thenReturn(Optional.of(bet));
-        Mockito.when(teamRepository.findByNameIgnoreCase(request.getWinningTeamName())).thenReturn(Optional.of(winningTeam));
+        UserBet userBet = new UserBet(user, bet, winningTeam, addUserBetRequest.getWinningTeamCoefficient(), addUserBetRequest.getAmount(), UserBetStatus.PENDING);
+        Mockito.when(userRepository.findById(addUserBetRequest.getUserId())).thenReturn(Optional.of(user));
+        Mockito.when(betRepository.findById(addUserBetRequest.getBetId())).thenReturn(Optional.of(bet));
+        Mockito.when(teamRepository.findByNameIgnoreCase(addUserBetRequest.getWinningTeamName())).thenReturn(Optional.of(winningTeam));
         Mockito.when(userBetRepository.save(userBet)).thenReturn(userBet);
-        AddUserBetResponse response = userBetService.add(request);
+        AddUserBetResponse response = userBetService.add(addUserBetRequest);
 
         assertNull(response.getErrors());
         assertEquals(userBet, response.getAddedUserBet());
@@ -85,7 +91,6 @@ class UserBetServiceTest {
     @Test
     public void shouldReturnErrorList_whenFindUserBetsByUserIdRequestValidationNotPassed() {
         FindUserBetsByUserIdRequest request = new FindUserBetsByUserIdRequest(null);
-        List<CoreError> errors = new ArrayList<>();
         errors.add(new CoreError("User ID", "must not be empty!"));
         Mockito.when(findUserBetsByUserIdRequestValidator.validate(request)).thenReturn(errors);
         FindUserBetsByUserIdResponse response = userBetService.findByUserId(request);
