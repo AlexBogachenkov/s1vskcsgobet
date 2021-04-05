@@ -126,9 +126,8 @@ class BetServiceTest {
 
     @Test
     public void shouldReturnAllBets() {
-        bets.add(betA);
         betB.setActive(false);
-        bets.add(betB);
+        bets = List.of(betA, betB);
         Mockito.when(betRepository.findAllByOrderByIdDesc()).thenReturn(bets);
         FindAllBetsResponse response = betService.findAll();
 
