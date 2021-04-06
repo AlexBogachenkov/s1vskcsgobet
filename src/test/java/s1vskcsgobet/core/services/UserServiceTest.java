@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,11 +37,17 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    private List<CoreError> errors;
+
+    @BeforeEach
+    public void setup() {
+        errors = new ArrayList<>();
+    }
+
     @Test
     public void shouldReturnErrorList_whenAddUserRequestValidationNotPassed() {
         AddUserRequest request = new AddUserRequest("", "password",
                 new BigDecimal("100"), Role.USER);
-        List<CoreError> errors = new ArrayList<>();
         errors.add(new CoreError("User nickname", "must not be empty!"));
         Mockito.when(addUserRequestValidator.validate(request)).thenReturn(errors);
         AddUserResponse response = userService.add(request);
@@ -69,7 +76,6 @@ class UserServiceTest {
     @Test
     public void shouldReturnErrorList_whenDeleteUserByNicknameRequestValidationNotPassed() {
         DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest("");
-        List<CoreError> errors = new ArrayList<>();
         errors.add(new CoreError("User nickname", "must not be empty!"));
         Mockito.when(deleteUserByNicknameRequestValidator.validate(request)).thenReturn(errors);
         DeleteUserByNicknameResponse response = userService.deleteByNickname(request);
