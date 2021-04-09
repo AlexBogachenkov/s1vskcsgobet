@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.validators.user_bet;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,9 +26,15 @@ class ApplyMatchResultToUserBetsRequestValidatorTest {
     @InjectMocks
     private ApplyMatchResultToUserBetsRequestValidator validator;
 
+    private ApplyMatchResultToUserBetsRequest request;
+
+    @BeforeEach
+    public void setup() {
+        request = new ApplyMatchResultToUserBetsRequest(2L, "teamName");
+    }
+
     @Test
     public void shouldReturnErrorList_whenBetNotFound() {
-        ApplyMatchResultToUserBetsRequest request = new ApplyMatchResultToUserBetsRequest(2L, "teamName");
         Mockito.when(betRepository.existsById(2L)).thenReturn(false);
         Mockito.when(teamRepository.existsByNameIgnoreCase("teamName")).thenReturn(true);
         Mockito.when(betRepository.countByIdAndTeamName(2L, "teamName")).thenReturn(1L);
@@ -41,7 +48,7 @@ class ApplyMatchResultToUserBetsRequestValidatorTest {
 
     @Test
     public void shouldReturnErrorList_whenWinningTeamNameIsNull() {
-        ApplyMatchResultToUserBetsRequest request = new ApplyMatchResultToUserBetsRequest(2L, null);
+        request.setWinningTeamName(null);
         Mockito.when(betRepository.existsById(2L)).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -53,7 +60,7 @@ class ApplyMatchResultToUserBetsRequestValidatorTest {
 
     @Test
     public void shouldReturnErrorList_whenWinningTeamNameIsEmpty() {
-        ApplyMatchResultToUserBetsRequest request = new ApplyMatchResultToUserBetsRequest(2L, "");
+        request.setWinningTeamName("");
         Mockito.when(betRepository.existsById(2L)).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -65,7 +72,7 @@ class ApplyMatchResultToUserBetsRequestValidatorTest {
 
     @Test
     public void shouldReturnErrorList_whenWinningTeamNameIsBlank() {
-        ApplyMatchResultToUserBetsRequest request = new ApplyMatchResultToUserBetsRequest(2L, "   ");
+        request.setWinningTeamName("   ");
         Mockito.when(betRepository.existsById(2L)).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -77,7 +84,6 @@ class ApplyMatchResultToUserBetsRequestValidatorTest {
 
     @Test
     public void shouldReturnErrorList_whenTeamNotFound() {
-        ApplyMatchResultToUserBetsRequest request = new ApplyMatchResultToUserBetsRequest(2L, "teamName");
         Mockito.when(betRepository.existsById(2L)).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("teamName")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
@@ -90,7 +96,6 @@ class ApplyMatchResultToUserBetsRequestValidatorTest {
 
     @Test
     public void shouldReturnErrorList_whenBetNotFoundByTeamName() {
-        ApplyMatchResultToUserBetsRequest request = new ApplyMatchResultToUserBetsRequest(2L, "teamName");
         Mockito.when(betRepository.existsById(2L)).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("teamName")).thenReturn(true);
         Mockito.when(betRepository.countByIdAndTeamName(2L, "teamName")).thenReturn(0L);
@@ -104,7 +109,6 @@ class ApplyMatchResultToUserBetsRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors() {
-        ApplyMatchResultToUserBetsRequest request = new ApplyMatchResultToUserBetsRequest(2L, "teamName");
         Mockito.when(betRepository.existsById(2L)).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("teamName")).thenReturn(true);
         Mockito.when(betRepository.countByIdAndTeamName(2L, "teamName")).thenReturn(1L);
