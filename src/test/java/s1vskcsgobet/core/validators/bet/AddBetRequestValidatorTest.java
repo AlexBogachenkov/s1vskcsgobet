@@ -24,19 +24,19 @@ class AddBetRequestValidatorTest {
     @InjectMocks
     private AddBetRequestValidator validator;
 
-    private AddBetRequest addBetRequest;
+    private AddBetRequest request;
 
     @BeforeEach
     public void setup() {
-        addBetRequest = new AddBetRequest("TeamAName", "TeamBName",
+        request = new AddBetRequest("TeamAName", "TeamBName",
                 new BigDecimal("2.23"), new BigDecimal("1.45"), "Final", true);
     }
 
     @Test
     public void shouldReturnError_whenTeamANameIsEmpty() {
-        addBetRequest.setTeamAName("");
+        request.setTeamAName("");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Team name", errors.get(0).getField());
@@ -45,9 +45,9 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamANameIsBlank() {
-        addBetRequest.setTeamAName("   ");
+        request.setTeamAName("   ");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Team name", errors.get(0).getField());
@@ -58,7 +58,7 @@ class AddBetRequestValidatorTest {
     public void shouldReturnError_whenTeamANotFound() {
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(false);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Team name", errors.get(0).getField());
@@ -67,9 +67,9 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamBNameIsEmpty() {
-        addBetRequest.setTeamBName("");
+        request.setTeamBName("");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Team name", errors.get(0).getField());
@@ -78,9 +78,9 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamBNameIsBlank() {
-        addBetRequest.setTeamBName("   ");
+        request.setTeamBName("   ");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Team name", errors.get(0).getField());
@@ -91,7 +91,7 @@ class AddBetRequestValidatorTest {
     public void shouldReturnError_whenTeamBNotFound() {
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(false);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Team name", errors.get(0).getField());
@@ -100,9 +100,9 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenTeamNamesAreEqual() {
-        addBetRequest.setTeamBName(addBetRequest.getTeamAName());
+        request.setTeamBName(request.getTeamAName());
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Team names", errors.get(0).getField());
@@ -111,10 +111,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamAIsNull() {
-        addBetRequest.setCoefficientTeamA(null);
+        request.setCoefficientTeamA(null);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
@@ -123,10 +123,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamAIsEmpty() {
-        addBetRequest.setCoefficientTeamA(BigDecimal.ZERO);
+        request.setCoefficientTeamA(BigDecimal.ZERO);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
@@ -135,10 +135,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamAIsLessThanOne() {
-        addBetRequest.setCoefficientTeamA(new BigDecimal("0.23"));
+        request.setCoefficientTeamA(new BigDecimal("0.23"));
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
@@ -147,10 +147,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamAEqualsOne() {
-        addBetRequest.setCoefficientTeamA(new BigDecimal("1.00"));
+        request.setCoefficientTeamA(new BigDecimal("1.00"));
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
@@ -159,10 +159,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamBIsNull() {
-        addBetRequest.setCoefficientTeamB(null);
+        request.setCoefficientTeamB(null);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
@@ -171,10 +171,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamBIsEmpty() {
-        addBetRequest.setCoefficientTeamB(BigDecimal.ZERO);
+        request.setCoefficientTeamB(BigDecimal.ZERO);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
@@ -183,10 +183,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamBIsLessThanOne() {
-        addBetRequest.setCoefficientTeamB(new BigDecimal("0.23"));
+        request.setCoefficientTeamB(new BigDecimal("0.23"));
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
@@ -195,10 +195,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenCoefficientTeamBEqualsOne() {
-        addBetRequest.setCoefficientTeamB(new BigDecimal("1.00"));
+        request.setCoefficientTeamB(new BigDecimal("1.00"));
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Coefficient", errors.get(0).getField());
@@ -207,10 +207,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenStageIsNull() {
-        addBetRequest.setStage(null);
+        request.setStage(null);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Stage", errors.get(0).getField());
@@ -219,10 +219,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenStageIsEmpty() {
-        addBetRequest.setStage("");
+        request.setStage("");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Stage", errors.get(0).getField());
@@ -231,10 +231,10 @@ class AddBetRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenStageIsBlank() {
-        addBetRequest.setStage("   ");
+        request.setStage("   ");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
         assertEquals("Stage", errors.get(0).getField());
@@ -245,7 +245,7 @@ class AddBetRequestValidatorTest {
     public void shouldNotReturnErrors() {
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamAName")).thenReturn(true);
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamBName")).thenReturn(true);
-        List<CoreError> errors = validator.validate(addBetRequest);
+        List<CoreError> errors = validator.validate(request);
 
         assertEquals(0, errors.size());
     }
