@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.validators.bet;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,16 @@ class ChangeBetIsActiveStatusRequestValidatorTest {
     @InjectMocks
     private ChangeBetIsActiveStatusRequestValidator validator;
 
+    private ChangeBetIsActiveStatusRequest request;
+
+    @BeforeEach
+    public void setup() {
+        request = new ChangeBetIsActiveStatusRequest(2L, true);
+    }
+
     @Test
     public void shouldReturnError_whenIdIsNull() {
-        ChangeBetIsActiveStatusRequest request = new ChangeBetIsActiveStatusRequest(null, true);
+        request.setBetId(null);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -34,8 +42,7 @@ class ChangeBetIsActiveStatusRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenIdNotFound() {
-        ChangeBetIsActiveStatusRequest request = new ChangeBetIsActiveStatusRequest(10L, true);
-        Mockito.when(betRepository.existsById(10L)).thenReturn(false);
+        Mockito.when(betRepository.existsById(2L)).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -45,8 +52,7 @@ class ChangeBetIsActiveStatusRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors() {
-        ChangeBetIsActiveStatusRequest request = new ChangeBetIsActiveStatusRequest(10L, true);
-        Mockito.when(betRepository.existsById(10L)).thenReturn(true);
+        Mockito.when(betRepository.existsById(2L)).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(0, errors.size());
