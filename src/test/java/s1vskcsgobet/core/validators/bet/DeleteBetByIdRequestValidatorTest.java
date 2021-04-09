@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.validators.bet;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,16 @@ class DeleteBetByIdRequestValidatorTest {
     @InjectMocks
     private DeleteBetByIdRequestValidator validator;
 
+    private DeleteBetByIdRequest request;
+
+    @BeforeEach
+    public void setup() {
+        request = new DeleteBetByIdRequest(10L);
+    }
+
     @Test
     public void shouldReturnError_whenIdIsNull() {
-        DeleteBetByIdRequest request = new DeleteBetByIdRequest(null);
+        request.setBetId(null);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -34,7 +42,6 @@ class DeleteBetByIdRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenIdNotFound() {
-        DeleteBetByIdRequest request = new DeleteBetByIdRequest(10L);
         Mockito.when(betRepository.existsById(10L)).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -45,7 +52,6 @@ class DeleteBetByIdRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors() {
-        DeleteBetByIdRequest request = new DeleteBetByIdRequest(10L);
         Mockito.when(betRepository.existsById(10L)).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
