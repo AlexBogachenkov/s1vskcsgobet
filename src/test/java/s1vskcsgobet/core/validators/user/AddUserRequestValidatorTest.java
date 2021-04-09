@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.validators.user;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,10 +25,17 @@ class AddUserRequestValidatorTest {
     @InjectMocks
     private AddUserRequestValidator validator;
 
+    private AddUserRequest request;
+
+    @BeforeEach
+    public void setup() {
+        request = new AddUserRequest("Nickname", "password",
+                new BigDecimal("1000"), Role.USER);
+    }
+
     @Test
     public void shouldReturnError_whenNicknameIsNull() {
-        AddUserRequest request = new AddUserRequest(null, "password",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserNickname(null);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -37,8 +45,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNicknameIsEmpty() {
-        AddUserRequest request = new AddUserRequest("", "password",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserNickname("");
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -48,8 +55,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNicknameIsBlank() {
-        AddUserRequest request = new AddUserRequest("   ", "password",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserNickname("   ");
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -59,8 +65,6 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNicknameAlreadyExists() {
-        AddUserRequest request = new AddUserRequest("Nickname", "password",
-                new BigDecimal("1000"), Role.USER);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -71,8 +75,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenPasswordIsNull() {
-        AddUserRequest request = new AddUserRequest("Nickname", null,
-                new BigDecimal("1000"), Role.USER);
+        request.setUserPassword(null);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -83,8 +86,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenPasswordIsEmpty() {
-        AddUserRequest request = new AddUserRequest("Nickname", "",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserPassword("");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -95,8 +97,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenPasswordIsBlank() {
-        AddUserRequest request = new AddUserRequest("Nickname", "   ",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserPassword("   ");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -107,8 +108,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenPasswordLengthIsLessThan6() {
-        AddUserRequest request = new AddUserRequest("Nickname", "12345",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserPassword("12345");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -119,8 +119,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors_whenPasswordLengthEquals6() {
-        AddUserRequest request = new AddUserRequest("Nickname", "123456",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserPassword("123456");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -129,8 +128,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors_whenPasswordLengthIsBetween6And20() {
-        AddUserRequest request = new AddUserRequest("Nickname", "123456789",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserPassword("123456789");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -139,8 +137,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors_whenPasswordLengthEquals20() {
-        AddUserRequest request = new AddUserRequest("Nickname", "12345123451234512345",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserPassword("12345123451234512345");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -149,8 +146,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenPasswordLengthIsMoreThan20() {
-        AddUserRequest request = new AddUserRequest("Nickname", "123451234512345123451",
-                new BigDecimal("1000"), Role.USER);
+        request.setUserPassword("123451234512345123451");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -161,8 +157,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenBalanceIsNull() {
-        AddUserRequest request = new AddUserRequest("Nickname", "password",
-                null, Role.USER);
+        request.setUserBalance(null);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -173,8 +168,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenBalanceIsLessThanZero() {
-        AddUserRequest request = new AddUserRequest("Nickname", "password",
-                new BigDecimal("-20"), Role.USER);
+        request.setUserBalance(new BigDecimal("-20"));
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -185,8 +179,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors_whenBalanceEqualsZero() {
-        AddUserRequest request = new AddUserRequest("Nickname", "password",
-                new BigDecimal("0"), Role.USER);
+        request.setUserBalance(new BigDecimal("0"));
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -195,8 +188,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenRoleIsNull() {
-        AddUserRequest request = new AddUserRequest("Nickname", "password",
-                new BigDecimal("100"), null);
+        request.setUserRole(null);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -207,8 +199,6 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors_whenRoleIsAllowedValueUser() {
-        AddUserRequest request = new AddUserRequest("Nickname", "password",
-                new BigDecimal("100"), Role.USER);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -217,8 +207,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors_whenRoleIsAllowedValueModerator() {
-        AddUserRequest request = new AddUserRequest("Nickname", "password",
-                new BigDecimal("100"), Role.MODERATOR);
+        request.setUserRole(Role.MODERATOR);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -227,8 +216,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors_whenRoleIsAllowedValueAdmin() {
-        AddUserRequest request = new AddUserRequest("Nickname", "password",
-                new BigDecimal("100"), Role.ADMIN);
+        request.setUserRole(Role.ADMIN);
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -237,9 +225,7 @@ class AddUserRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors() {
-        AddUserRequest request = new AddUserRequest("nickname", "password",
-                new BigDecimal("1000"), Role.USER);
-        Mockito.when(userRepository.existsByNicknameIgnoreCase("nickname")).thenReturn(false);
+        Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(0, errors.size());
