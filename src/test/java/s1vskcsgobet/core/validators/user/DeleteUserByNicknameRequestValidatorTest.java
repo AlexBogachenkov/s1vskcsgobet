@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.validators.user;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,16 @@ class DeleteUserByNicknameRequestValidatorTest {
     @InjectMocks
     private DeleteUserByNicknameRequestValidator validator;
 
+    private DeleteUserByNicknameRequest request;
+
+    @BeforeEach
+    public void setup() {
+        request = new DeleteUserByNicknameRequest("Nickname");
+    }
+
     @Test
     public void shouldReturnError_whenNicknameIsNull() {
-        DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest(null);
+        request.setNickname(null);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -34,7 +42,7 @@ class DeleteUserByNicknameRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNicknameIsEmpty() {
-        DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest("");
+        request.setNickname("");
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -44,7 +52,7 @@ class DeleteUserByNicknameRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNicknameIsBlank() {
-        DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest("   ");
+        request.setNickname("   ");
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -54,7 +62,6 @@ class DeleteUserByNicknameRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNicknameNotExists() {
-        DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest("Nickname");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -65,7 +72,6 @@ class DeleteUserByNicknameRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors() {
-        DeleteUserByNicknameRequest request = new DeleteUserByNicknameRequest("Nickname");
         Mockito.when(userRepository.existsByNicknameIgnoreCase("Nickname")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
