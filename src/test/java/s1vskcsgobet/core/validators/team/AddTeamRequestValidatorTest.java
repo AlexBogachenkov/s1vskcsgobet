@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.validators.team;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,16 @@ class AddTeamRequestValidatorTest {
     @InjectMocks
     private AddTeamRequestValidator validator;
 
+    private AddTeamRequest request;
+
+    @BeforeEach
+    public void setup() {
+        request = new AddTeamRequest("TeamName");
+    }
+
     @Test
     public void shouldReturnError_whenNameIsNull() {
-        AddTeamRequest request = new AddTeamRequest(null);
+        request.setTeamName(null);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -34,7 +42,7 @@ class AddTeamRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNameIsEmpty() {
-        AddTeamRequest request = new AddTeamRequest("");
+        request.setTeamName("");
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -44,7 +52,7 @@ class AddTeamRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNameIsBlank() {
-        AddTeamRequest request = new AddTeamRequest("   ");
+        request.setTeamName("   ");
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -54,7 +62,6 @@ class AddTeamRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNameAlreadyExists() {
-        AddTeamRequest request = new AddTeamRequest("TeamName");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
@@ -65,7 +72,6 @@ class AddTeamRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors() {
-        AddTeamRequest request = new AddTeamRequest("TeamName");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamName")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
