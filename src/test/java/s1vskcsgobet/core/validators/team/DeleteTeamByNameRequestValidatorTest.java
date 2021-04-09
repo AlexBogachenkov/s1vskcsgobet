@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.validators.team;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,16 @@ class DeleteTeamByNameRequestValidatorTest {
     @InjectMocks
     private DeleteTeamByNameRequestValidator validator;
 
+    private DeleteTeamByNameRequest request;
+
+    @BeforeEach
+    public void setup() {
+        request = new DeleteTeamByNameRequest("TeamName");
+    }
+
     @Test
     public void shouldReturnError_whenNameIsNull() {
-        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest(null);
+        request.setTeamName(null);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -34,7 +42,7 @@ class DeleteTeamByNameRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNameIsEmpty() {
-        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest("");
+        request.setTeamName("");
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -44,7 +52,7 @@ class DeleteTeamByNameRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNameIsBlank() {
-        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest("   ");
+        request.setTeamName("   ");
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -54,7 +62,6 @@ class DeleteTeamByNameRequestValidatorTest {
 
     @Test
     public void shouldReturnError_whenNameNotFound() {
-        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest("TeamName");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamName")).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -65,7 +72,6 @@ class DeleteTeamByNameRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors() {
-        DeleteTeamByNameRequest request = new DeleteTeamByNameRequest("TeamName");
         Mockito.when(teamRepository.existsByNameIgnoreCase("TeamName")).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
