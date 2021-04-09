@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.validators.user_bet;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,16 @@ class FindUserBetsByUserIdRequestValidatorTest {
     @InjectMocks
     private FindUserBetsByUserIdRequestValidator validator;
 
+    private FindUserBetsByUserIdRequest request;
+
+    @BeforeEach
+    public void setup() {
+        request = new FindUserBetsByUserIdRequest(2L);
+    }
+
     @Test
     public void shouldReturnErrorList_whenIdIsNull() {
-        FindUserBetsByUserIdRequest request = new FindUserBetsByUserIdRequest(null);
+        request.setUserId(null);
         List<CoreError> errors = validator.validate(request);
 
         assertEquals(1, errors.size());
@@ -34,7 +42,6 @@ class FindUserBetsByUserIdRequestValidatorTest {
 
     @Test
     public void shouldReturnErrorList_whenIdNotFound() {
-        FindUserBetsByUserIdRequest request = new FindUserBetsByUserIdRequest(2L);
         Mockito.when(userRepository.existsById(2L)).thenReturn(false);
         List<CoreError> errors = validator.validate(request);
 
@@ -45,7 +52,6 @@ class FindUserBetsByUserIdRequestValidatorTest {
 
     @Test
     public void shouldNotReturnErrors() {
-        FindUserBetsByUserIdRequest request = new FindUserBetsByUserIdRequest(2L);
         Mockito.when(userRepository.existsById(2L)).thenReturn(true);
         List<CoreError> errors = validator.validate(request);
 
