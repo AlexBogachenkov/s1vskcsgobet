@@ -13,9 +13,9 @@
         </tr>
     </table>
 </div>
-<form action="/login" th:object="${request}" method="post">
-    <input type="text" th:field="${request.nickname}" placeholder="Nickname"/>
-    <input type="password" th:field="${request.password}" placeholder="Password"/>
+<form action="/login" method="post">
+    <input type="text" name="username" placeholder="Nickname"/>
+    <input type="password" name="password" placeholder="Password"/>
     <input type="submit" value="Log in"/>
 </form>
 </body>

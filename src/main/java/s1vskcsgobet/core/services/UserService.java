@@ -16,6 +16,7 @@ import s1vskcsgobet.core.validators.user.SignupUserRequestValidator;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -91,6 +92,10 @@ public class UserService {
         User user = userRepository.findById(request.getUserId()).get();
         user.setBalance(user.getBalance().subtract(request.getAmount()));
         userRepository.save(user);
+    }
+
+    public Optional<User> findUser(String nickname, String password) {
+        return userRepository.findByNicknameIgnoreCaseAndPassword(nickname, password);
     }
 
     public FindAllUsersResponse findAll() {
