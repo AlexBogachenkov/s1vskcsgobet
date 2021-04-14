@@ -1,5 +1,6 @@
 package s1vskcsgobet.web_ui.controllers.rest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import s1vskcsgobet.core.requests.user_bet.AddUserBetRequest;
 import s1vskcsgobet.core.requests.user_bet.ApplyMatchResultToUserBetsRequest;
@@ -17,11 +18,13 @@ public class UserBetRestController {
         this.userBetService = userBetService;
     }
 
+    @PreAuthorize("#request.userId == authentication.principal.id")
     @PostMapping(consumes = "application/json", produces = "application/json")
     public AddUserBetResponse addUserBet(@RequestBody AddUserBetRequest request) {
         return userBetService.add(request);
     }
 
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @PatchMapping(consumes = "application/json")
     public ApplyMatchResultToUserBetsResponse applyMatchResult(@RequestBody ApplyMatchResultToUserBetsRequest request) {
         return userBetService.applyMatchResult(request);
