@@ -18,7 +18,7 @@ public class UserBetsPageController {
     private final UserBetService userBetService;
     private final ApplicationContextService context;
 
-    @PreAuthorize("#id == authentication.principal.id")
+    @PreAuthorize("#id == authentication.principal.id or hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping(value = "/user/{id}/bets")
     public String showUserBetsPage(@PathVariable Long id, ModelMap modelMap) {
         FindUserBetsByUserIdRequest request = new FindUserBetsByUserIdRequest(id);
