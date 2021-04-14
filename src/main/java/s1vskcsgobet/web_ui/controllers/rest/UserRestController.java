@@ -1,5 +1,6 @@
 package s1vskcsgobet.web_ui.controllers.rest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import s1vskcsgobet.core.requests.user.AddUserRequest;
 import s1vskcsgobet.core.requests.user.DeleteUserByNicknameRequest;
@@ -10,6 +11,7 @@ import s1vskcsgobet.core.services.UserService;
 
 @RestController
 @RequestMapping("/user")
+@PreAuthorize("hasRole('ADMIN')")
 public class UserRestController {
 
     private final UserService userService;
@@ -30,8 +32,9 @@ public class UserRestController {
         return userService.deleteByNickname(request);
     }
 
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping(produces = "application/json")
-    public FindAllUsersResponse findAllTeams() {
+    public FindAllUsersResponse findAllUsers() {
         return userService.findAll();
     }
 
