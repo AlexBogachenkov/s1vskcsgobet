@@ -1,5 +1,6 @@
 package s1vskcsgobet.web_ui.controllers.rest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import s1vskcsgobet.core.requests.bet.AddBetRequest;
 import s1vskcsgobet.core.requests.bet.ChangeBetIsActiveStatusRequest;
@@ -12,6 +13,7 @@ import s1vskcsgobet.core.services.BetService;
 
 @RestController
 @RequestMapping("/bet")
+@PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
 public class BetRestController {
 
     private final BetService betService;
@@ -25,6 +27,7 @@ public class BetRestController {
         return betService.add(request);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "/{id}", produces = "application/json")
     public DeleteBetByIdResponse deleteBetById(@PathVariable Long id) {
         DeleteBetByIdRequest request = new DeleteBetByIdRequest();
@@ -33,7 +36,7 @@ public class BetRestController {
     }
 
     @PatchMapping(consumes = "application/json", produces = "application/json")
-    public ChangeBetIsActiveStatusResponse addBet(@RequestBody ChangeBetIsActiveStatusRequest request) {
+    public ChangeBetIsActiveStatusResponse changeBetIsActiveStatus(@RequestBody ChangeBetIsActiveStatusRequest request) {
         return betService.changeIsActiveStatus(request);
     }
 
