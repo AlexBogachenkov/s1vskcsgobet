@@ -7,11 +7,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 import s1vskcsgobet.core.domain.User;
 import s1vskcsgobet.core.services.UserService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 
@@ -28,11 +30,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
+        Optional<User> foundUser = userService.findUser(username);
 
-        // Check: BCrypt.checkpw(password, foundUser.get().getPassword())
-        return userService.findUser(username, password)
-                .map(user -> createAuthentication(user, password))
-                .orElseThrow(() -> new BadCredentialsException("Username or password is invalid"));
+        if (foundUser.isPresent() && BCrypt.checkpw(password, foundUser.get().getPassword())) {
+            return createAuthentication(foundUser.get(), password);
+        } else {
+            throw new BadCredentialsException("Username or password is invalid");
+        }
+//        return userService.findUser(username, password)
+//                .map(user -> createAuthentication(user, password))
+//                .orElseThrow(() -> new BadCredentialsException("Username or password is invalid"));
     }
 
     private Authentication createAuthentication(User user, String password) {

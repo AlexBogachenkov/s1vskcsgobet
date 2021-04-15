@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.services;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import s1vskcsgobet.core.database.UserRepository;
@@ -26,14 +27,16 @@ public class UserService {
     private final AddUserRequestValidator addUserRequestValidator;
     private final SignupUserRequestValidator signupUserRequestValidator;
     private final DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator;
+    private final PasswordEncoder encoder;
 
     public UserService(UserRepository userRepository, AddUserRequestValidator addUserRequestValidator,
                        SignupUserRequestValidator signupUserRequestValidator,
-                       DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator) {
+                       DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.addUserRequestValidator = addUserRequestValidator;
         this.signupUserRequestValidator = signupUserRequestValidator;
         this.deleteUserByNicknameRequestValidator = deleteUserByNicknameRequestValidator;
+        this.encoder = encoder;
     }
 
     public AddUserResponse add(AddUserRequest request) {
@@ -53,7 +56,7 @@ public class UserService {
         }
         User user = new User();
         user.setNickname(request.getNickname());
-        user.setPassword(request.getPassword());
+        user.setPassword(encoder.encode(request.getPassword()));
         user.setBalance(new BigDecimal("1000.00"));
         user.setRole(Role.USER);
         userRepository.save(user);
@@ -84,8 +87,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> findUser(String nickname, String password) {
-        return userRepository.findByNicknameIgnoreCaseAndPassword(nickname, password);
+    public Optional<User> findUser(String nickname) {
+        return userRepository.findByNicknameIgnoreCase(nickname);
     }
 
     public FindAllUsersResponse findAll() {

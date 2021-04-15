@@ -11,8 +11,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByNicknameIgnoreCase(String nickname);
 
-    Optional<User> findByNicknameIgnoreCaseAndPassword(String nickname, String password);
-
     int deleteByNicknameIgnoreCase(String nickname);
 
     boolean existsByNicknameIgnoreCase(String nickname);
