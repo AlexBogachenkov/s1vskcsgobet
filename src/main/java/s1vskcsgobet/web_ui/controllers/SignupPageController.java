@@ -31,7 +31,7 @@ public class SignupPageController {
             modelMap.addAttribute("errors", response.getErrors());
             return "signup";
         }
-        return "bets";
+        return "successfulSignup";
     }
 
 }
