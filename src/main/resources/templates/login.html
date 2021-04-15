@@ -6,13 +6,6 @@
 </head>
 <body>
 <h1>Log in</h1>
-<div th:if="${errors != null}">
-    <table>
-        <tr th:each="error : ${errors}">
-            <td th:text="${error.field} + ' ' + ${error.message}"></td>
-        </tr>
-    </table>
-</div>
 <form action="/login" method="post">
     <input type="text" name="username" placeholder="Nickname"/>
     <input type="password" name="password" placeholder="Password"/>
