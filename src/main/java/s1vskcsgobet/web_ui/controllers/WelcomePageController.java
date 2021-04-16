@@ -10,11 +10,11 @@ import java.security.Principal;
 public class WelcomePageController {
 
     @GetMapping(value = "/")
-    public ModelAndView showWelcomePage(Principal principal) {
+    public String showWelcomePage(Principal principal) {
         if (principal == null) {
-            return new ModelAndView("index");
+            return "index";
         }
-        return new ModelAndView("redirect:/bets");
+        return "redirect:/bets";
     }
 
 }
