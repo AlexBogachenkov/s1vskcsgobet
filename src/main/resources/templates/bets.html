@@ -68,6 +68,11 @@
 
 </div>
 
+<div th:if="${user}">
+    <p th:text="${user.nickname}"></p>
+    <p th:text="${user.balance} + ' JURCOINS'"></p>
+</div>
+
 <script>
 
     function showMakeBetPopup(betId, stage, teamAName, teamBName, winningTeamName, winningTeamCoefficient) {
