@@ -9,10 +9,12 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class UserDto {
 
+    private Long id;
     private String nickname;
     private BigDecimal balance;
 
-    public UserDto(String nickname, BigDecimal balance) {
+    public UserDto(Long id, String nickname, BigDecimal balance) {
+        this.id = id;
         this.nickname = nickname;
         this.balance = balance;
     }

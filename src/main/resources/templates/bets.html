@@ -61,7 +61,6 @@
         <p id="teams"></p>
         <p id="winning-team"></p>
         <p id="coefficient"></p>
-        <input id="user-id-to-make-bet" placeholder="User ID">
         <input id="bet-amount" placeholder="Amount">
         <button id="make-bet-btn">Make bet</button>
     </div>
@@ -73,7 +72,7 @@
     <p th:text="${user.balance} + ' JURCOINS'"></p>
 </div>
 
-<script>
+<script th:inline="javascript">
 
     function showMakeBetPopup(betId, stage, teamAName, teamBName, winningTeamName, winningTeamCoefficient) {
         document.getElementById("stage").innerText = stage;
@@ -101,7 +100,7 @@
     }
 
     function sendAddUserBetRequest(betId, winningTeamName, winningTeamCoefficient) {
-        let userId = document.getElementById("user-id-to-make-bet").value;
+        let userId = [[${user}]].id;
         let amount = document.getElementById("bet-amount").value;
         let url = "/userBet";
 

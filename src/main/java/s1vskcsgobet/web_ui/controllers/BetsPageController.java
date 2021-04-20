@@ -25,7 +25,7 @@ public class BetsPageController {
     public String showBetsPage(ModelMap modelMap) {
         FindAllBetsResponse response = betService.findActive();
         User user = userRepository.findById(context.getUserId()).get();
-        UserDto userDto = new UserDto(user.getNickname(), user.getBalance());
+        UserDto userDto = new UserDto(user.getId(), user.getNickname(), user.getBalance());
         modelMap.addAttribute("activeBets", response.getAllBets());
         modelMap.addAttribute("user", userDto);
         return "bets";

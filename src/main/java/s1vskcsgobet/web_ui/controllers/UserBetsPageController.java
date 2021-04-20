@@ -28,7 +28,7 @@ public class UserBetsPageController {
         FindUserBetsByUserIdRequest request = new FindUserBetsByUserIdRequest(id);
         FindUserBetsByUserIdResponse response = userBetService.findByUserId(request);
         User user = userRepository.findById(context.getUserId()).get();
-        UserDto userDto = new UserDto(user.getNickname(), user.getBalance());
+        UserDto userDto = new UserDto(user.getId(), user.getNickname(), user.getBalance());
         modelMap.addAttribute("userBets", response.getUserBets());
         modelMap.addAttribute("errors", response.getErrors());
         modelMap.addAttribute("user", userDto);
