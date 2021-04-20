@@ -43,6 +43,8 @@ public class SignupUserRequestValidator {
     private Optional<CoreError> validatePassword(String password) {
         if (password == null || password.isBlank()) {
             return Optional.of(new CoreError("Password", "must not be empty and must not contain spaces!"));
+        } else if (password.contains(" ")) {
+            return Optional.of(new CoreError("Password", "must not contain spaces."));
         } else if (password.length() < 6 || password.length() > 20) {
             return Optional.of(new CoreError("Password", "must contain from 6 to 20 characters(including)."));
         } else {
