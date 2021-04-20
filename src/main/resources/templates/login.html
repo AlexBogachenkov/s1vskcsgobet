@@ -6,6 +6,12 @@
 </head>
 <body>
 <h1>Log in</h1>
+<div th:if="${param.error}">
+    <p>Username or password is invalid</p>
+</div>
+<div th:if="${param.logout}">
+    <p>You have successfully logged out</p>
+</div>
 <form action="/login" method="post">
     <input type="text" name="username" placeholder="Nickname"/>
     <input type="password" name="password" placeholder="Password"/>
