@@ -50,8 +50,7 @@
 </div>
 <br>
 
-<input type="number" id="user-id-to-find-bets" placeholder="User ID">
-<button onclick="findUserBets()">Find user bets</button>
+<button onclick="findUserBets()">My bets</button>
 
 <div id="make-bet-popup" class="popup">
 
@@ -131,7 +130,7 @@
     }
 
     function findUserBets() {
-        let id = document.getElementById("user-id-to-find-bets").value;
+        let id = [[${user}]].id;
         window.location.href = "/user/" + id + "/bets";
     }
 
