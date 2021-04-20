@@ -34,12 +34,18 @@
         </tr>
     </table>
 </div>
+
 <div th:if="${errors != null}">
     <table>
         <tr th:each="error : ${errors}">
             <td th:text="${error.field + ' ' + error.message}"></td>
         </tr>
     </table>
+</div>
+
+<div th:if="${user}">
+    <p th:text="${user.nickname}"></p>
+    <p th:text="${user.balance} + ' JURCOINS'"></p>
 </div>
 
 <script>
