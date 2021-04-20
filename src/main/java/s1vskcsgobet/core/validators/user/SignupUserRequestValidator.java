@@ -29,6 +29,8 @@ public class SignupUserRequestValidator {
     private Optional<CoreError> validateNickname(String nickname) {
         if (nickname == null || nickname.isBlank()) {
             return Optional.of(new CoreError("Nickname", "must not be empty!"));
+        } else if (!nickname.matches("[a-zA-Z0-9]*")) {
+            return Optional.of(new CoreError("Nickname", "must contain only letters or numbers."));
         } else if (nickname.length() < 4 || nickname.length() > 20) {
             return Optional.of(new CoreError("Nickname", "must contain from 4 to 20 characters(including)."));
         } else if (userRepository.existsByNicknameIgnoreCase(nickname)) {
@@ -40,7 +42,7 @@ public class SignupUserRequestValidator {
 
     private Optional<CoreError> validatePassword(String password) {
         if (password == null || password.isBlank()) {
-            return Optional.of(new CoreError("Password", "must not be empty and must not contain only spaces!"));
+            return Optional.of(new CoreError("Password", "must not be empty and must not contain spaces!"));
         } else if (password.length() < 6 || password.length() > 20) {
             return Optional.of(new CoreError("Password", "must contain from 6 to 20 characters(including)."));
         } else {
