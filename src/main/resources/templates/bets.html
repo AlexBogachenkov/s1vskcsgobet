@@ -111,7 +111,7 @@
         input.addEventListener('input', updateValue);
 
         function updateValue(e) {
-            possibleGain.innerText = e.target.value * winningTeamCoefficient;
+            possibleGain.innerText = Math.round(e.target.value * winningTeamCoefficient * 100) / 100;
         }
     }
 
