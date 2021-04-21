@@ -60,7 +60,8 @@
         <p id="teams"></p>
         <p id="winning-team"></p>
         <p id="coefficient"></p>
-        <input id="bet-amount" placeholder="Amount">
+        <input type="number" id="bet-amount" placeholder="Amount">
+        <p id="possible-gain">0.00</p>
         <button id="make-bet-btn">Make bet</button>
     </div>
 
@@ -82,9 +83,12 @@
         let span = document.getElementsByClassName("close-btn")[0];
         let btn = document.getElementById("make-bet-btn");
         popup.style.display = "block";
+        calculatePossibleGain(winningTeamCoefficient);
 
         span.onclick = function () {
             popup.style.display = "none";
+            document.getElementById('bet-amount').value = "";
+            document.getElementById('possible-gain').innerHTML = "0.00";
         }
 
         btn.onclick = function () {
@@ -94,7 +98,20 @@
         window.onclick = function (event) {
             if (event.target === popup) {
                 popup.style.display = "none";
+                document.getElementById('bet-amount').value = "";
+                document.getElementById('possible-gain').innerHTML = "0.00";
             }
+        }
+    }
+
+    function calculatePossibleGain(winningTeamCoefficient) {
+        const input = document.getElementById('bet-amount');
+        const possibleGain = document.getElementById('possible-gain');
+
+        input.addEventListener('input', updateValue);
+
+        function updateValue(e) {
+            possibleGain.innerText = e.target.value * winningTeamCoefficient;
         }
     }
 
