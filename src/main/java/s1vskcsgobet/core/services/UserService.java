@@ -1,5 +1,6 @@
 package s1vskcsgobet.core.services;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class UserService {
 
     public UserService(UserRepository userRepository, AddUserRequestValidator addUserRequestValidator,
                        SignupUserRequestValidator signupUserRequestValidator,
-                       DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator, PasswordEncoder encoder) {
+                       DeleteUserByNicknameRequestValidator deleteUserByNicknameRequestValidator, @Lazy PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.addUserRequestValidator = addUserRequestValidator;
         this.signupUserRequestValidator = signupUserRequestValidator;
